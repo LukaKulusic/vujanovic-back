@@ -1,0 +1,38 @@
+version: '3.8'
+services:
+  api:
+    container_name: api
+    restart: always
+    build: .
+    ports:
+      - '3000:3000'
+    depends_on:
+      - db
+    volumes:
+      - .:/usr/src/app
+
+  db:
+    container_name: postgresDB
+    image: postgres
+    ports:
+      - '5434:5432'
+    volumes:
+      - pgdb_data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: rafting
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin4_rafing
+    restart: always
+    ports:
+      - '5050:80'
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: password123!
+    volumes:
+      - pgadmin4_data:/var/lib/pgadmin
+volumes:
+  pgdb_data:
+  pgadmin4_data:

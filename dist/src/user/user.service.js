@@ -40,7 +40,7 @@ let UserService = class UserService {
         const keyword = query._q || '';
         let result = await this.userRepo.findAndCount({
             order: { id: query._sortOrder },
-            where: { name: typeorm_2.Like('%' + keyword + '%') },
+            where: { name: (0, typeorm_2.Like)('%' + keyword + '%') },
             skip: skip,
             take: take,
             select: {
@@ -185,8 +185,8 @@ let UserService = class UserService {
     }
 };
 UserService = __decorate([
-    common_1.Injectable(),
-    __param(0, typeorm_1.InjectRepository(user_entity_1.User)),
+    (0, common_1.Injectable)(),
+    __param(0, (0, typeorm_1.InjectRepository)(user_entity_1.User)),
     __metadata("design:paramtypes", [typeorm_2.Repository])
 ], UserService);
 exports.UserService = UserService;

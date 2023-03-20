@@ -15,7 +15,7 @@ const accommodation_entity_1 = require("./entity/accommodation.entity");
 let AccommodationModule = class AccommodationModule {
 };
 AccommodationModule = __decorate([
-    common_1.Module({
+    (0, common_1.Module)({
         imports: [typeorm_1.TypeOrmModule.forFeature([accommodation_entity_1.Accommodation])],
         providers: [accommodation_service_1.AccommodationService],
         controllers: [accommodation_controller_1.AccommodationController],

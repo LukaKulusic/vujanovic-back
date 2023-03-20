@@ -10,34 +10,32 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Accommodation = void 0;
-const reservation_entity_1 = require("../../reservation/entity/reservation.entity");
+const reservation_accommodation_entity_1 = require("../../reservation-accommodation/entity/reservation-accommodation.entity");
 const typeorm_1 = require("typeorm");
 let Accommodation = class Accommodation extends typeorm_1.BaseEntity {
 };
 __decorate([
-    typeorm_1.PrimaryGeneratedColumn('increment'),
+    (0, typeorm_1.PrimaryGeneratedColumn)('increment'),
     __metadata("design:type", Number)
 ], Accommodation.prototype, "id", void 0);
 __decorate([
-    typeorm_1.Column(),
+    (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], Accommodation.prototype, "name", void 0);
 __decorate([
-    typeorm_1.CreateDateColumn({ type: 'timestamp', select: false }),
+    (0, typeorm_1.CreateDateColumn)({ type: 'timestamp', select: false }),
     __metadata("design:type", Date)
 ], Accommodation.prototype, "createdDate", void 0);
 __decorate([
-    typeorm_1.UpdateDateColumn({ type: 'timestamp', select: false }),
+    (0, typeorm_1.UpdateDateColumn)({ type: 'timestamp', select: false }),
     __metadata("design:type", Date)
 ], Accommodation.prototype, "updatedDate", void 0);
 __decorate([
-    typeorm_1.OneToMany(() => reservation_entity_1.Reservation, (reservation) => reservation.accommodation, {
-        onDelete: 'SET NULL',
-    }),
+    (0, typeorm_1.OneToMany)(() => reservation_accommodation_entity_1.ReservationAccommodation, (accommodationToReservation) => accommodationToReservation.reservation, { cascade: true }),
     __metadata("design:type", Array)
-], Accommodation.prototype, "reservations", void 0);
+], Accommodation.prototype, "accommodationsToReservation", void 0);
 Accommodation = __decorate([
-    typeorm_1.Entity('accommodation')
+    (0, typeorm_1.Entity)('accommodation')
 ], Accommodation);
 exports.Accommodation = Accommodation;
 //# sourceMappingURL=accommodation.entity.js.map

@@ -15,8 +15,8 @@ const class_validator_1 = require("class-validator");
 class GetManyDto {
 }
 __decorate([
-    swagger_1.ApiProperty(),
-    class_validator_1.IsNumber({}, { each: true }),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsNumber)({}, { each: true }),
     __metadata("design:type", Array)
 ], GetManyDto.prototype, "ids", void 0);
 exports.GetManyDto = GetManyDto;

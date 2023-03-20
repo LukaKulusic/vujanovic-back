@@ -22,19 +22,22 @@ const program_module_1 = require("./program/program.module");
 const reservation_module_1 = require("./reservation/reservation.module");
 const accommodation_module_1 = require("./accommodation/accommodation.module");
 const food_module_1 = require("./food/food.module");
-const reservation_program_module_1 = require("./reservation-program/reservation-program.module");
 const event_emitter_1 = require("@nestjs/event-emitter");
 const payment_module_1 = require("./payment/payment.module");
 const roles_guard_1 = require("./user/roles.guard");
 const mail_module_1 = require("./mail/mail.module");
 const logger_middleware_1 = require("./middleware/logger.middleware");
+const reservation_accommodation_module_1 = require("./reservation-accommodation/reservation-accommodation.module");
+const reservation_description_module_1 = require("./reservation-description/reservation-description.module");
+const reservation_description_food_module_1 = require("./reservation-description-food/reservation-description-food.module");
+const reservation_description_program_module_1 = require("./reservation-description-program/reservation-description-program.module");
 let AppModule = class AppModule {
     configure(consumer) {
         consumer.apply(logger_middleware_1.LoggerMiddleware).forRoutes('*');
     }
 };
 AppModule = __decorate([
-    common_1.Module({
+    (0, common_1.Module)({
         imports: [
             event_emitter_1.EventEmitterModule.forRoot(),
             typeorm_1.TypeOrmModule.forRoot(typeOrmConfig),
@@ -48,9 +51,12 @@ AppModule = __decorate([
             reservation_module_1.ReservationModule,
             accommodation_module_1.AccommodationModule,
             food_module_1.FoodModule,
-            reservation_program_module_1.ReservationProgramModule,
             payment_module_1.PaymentModule,
             mail_module_1.MailModule,
+            reservation_accommodation_module_1.ReservationAccommodationModule,
+            reservation_description_module_1.ReservationDescriptionModule,
+            reservation_description_food_module_1.ReservationDescriptionFoodModule,
+            reservation_description_program_module_1.ReservationDescriptionProgramModule,
         ],
         providers: [
             {

@@ -15,7 +15,7 @@ const program_entity_1 = require("./entity/program.entity");
 let ProgramModule = class ProgramModule {
 };
 ProgramModule = __decorate([
-    common_1.Module({
+    (0, common_1.Module)({
         imports: [typeorm_1.TypeOrmModule.forFeature([program_entity_1.Program])],
         providers: [program_service_1.ProgramService],
         controllers: [program_controller_1.ProgramController],

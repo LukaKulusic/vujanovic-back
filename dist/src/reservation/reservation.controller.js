@@ -25,12 +25,14 @@ const get_current_user_decorator_1 = require("../auth/decorator/get-current-user
 const get_many_user_dto_1 = require("../user/dto/get-many-user.dto");
 const update_many_reservation_dto_1 = require("./dto/update-many-reservation.dto");
 const public_decorator_1 = require("../auth/decorator/public.decorator");
+const report_meals_dto_1 = require("./dto/report-meals.dto");
 let ReservationController = class ReservationController {
     constructor(reservationService) {
         this.reservationService = reservationService;
     }
     async getAll(req) {
-        return await this.reservationService.getList(req.query);
+        return await this.reservationService
+            .getList(req.query);
     }
     async getById(id) {
         const reservation = await this.reservationService.getOne(id);
@@ -60,7 +62,7 @@ let ReservationController = class ReservationController {
         const updatedReservation = await this.reservationService.update(id, body);
         if (updatedReservation) {
             res.send(updatedReservation);
-            const text = `Azurirana rezervacija id:${updatedReservation.data.id}, ime:${updatedReservation.data.name}, broj osoba:${updatedReservation.data.personNumber}, broj vegana:${updatedReservation.data.veganNumber}, od:${updatedReservation.data.dateFrom}, do:${updatedReservation.data.dateTo}, programi:[${updatedReservation.data["titles"]}], tip obroka:${updatedReservation.data.food.name}, tip placanja:${updatedReservation.data.payment.type}
+            const text = `Azurirana rezervacija id:${updatedReservation.data.id}, ime:${updatedReservation.data.name}, od:${updatedReservation.data.dateFrom.toISOString().split("T")[0]}, do:${updatedReservation.data.dateTo.toISOString().split("T")[0]}, broj osoba:${updatedReservation.data.personNumber}, broj vegana:${updatedReservation.data.veganNumber},  broj vegetarijanaca:${updatedReservation.data.vegetarianNumber}, smjestaj:[${updatedReservation.data["accommodationName"]}]
           `;
             await this.reservationService.newReservationEmail(text);
         }
@@ -84,7 +86,7 @@ let ReservationController = class ReservationController {
         const result = await this.reservationService.getOne(reservation.id);
         res.send(result);
         if (result) {
-            const text = `Nova rezervacija id:${reservation.id}, ime:${reservation.name}, broj osoba:${reservation.personNumber}, broj vegana:${reservation.veganNumber}, od:${reservation.dateFrom}, do:${reservation.dateTo}, programi:[${result.data["titles"]}], tip obroka:${reservation.food.name}, tip placanja:${reservation.payment.type}
+            const text = `Nova rezervacija id:${result.data.id}, ime:${result.data.name}, od:${result.data.dateFrom.toISOString().split("T")[0]}, do:${result.data.dateTo.toISOString().split("T")[0]}, broj osoba:${result.data.personNumber}, broj vegana:${result.data.veganNumber},  broj vegetarijanaca:${result.data.vegetarianNumber}, smjestaj:[${result.data["accommodationName"]}]
           `;
             await this.reservationService.newReservationEmail(text);
         }
@@ -122,8 +124,35 @@ let ReservationController = class ReservationController {
             throw new common_1.HttpException("Bad request", common_1.HttpStatus.BAD_REQUEST);
         }
     }
+    async getReportByMealCount(body) {
+        const report = await this.reservationService.getReportByMealCount(body.date);
+        if (report) {
+            return report;
+        }
+        else {
+            throw new common_1.HttpException("Bad request", common_1.HttpStatus.BAD_REQUEST);
+        }
+    }
     async getReportByCash(query) {
-        const report = await this.reservationService.getReportByCash(query);
+        const report = await this.reservationService.getReportByPayment(query);
+        if (report) {
+            return report;
+        }
+        else {
+            throw new common_1.HttpException("Bad request", common_1.HttpStatus.BAD_REQUEST);
+        }
+    }
+    async getReportByDate(query) {
+        const report = await this.reservationService.getReportByContact(query);
+        if (report) {
+            return report;
+        }
+        else {
+            throw new common_1.HttpException("Bad request", common_1.HttpStatus.BAD_REQUEST);
+        }
+    }
+    async getDailyReport(query) {
+        const report = await this.reservationService.getDailyReport(query);
         if (report) {
             return report;
         }
@@ -133,107 +162,131 @@ let ReservationController = class ReservationController {
     }
 };
 __decorate([
-    common_1.Get(),
-    roles_decorator_1.Roles(roles_enum_1.UserRoles.ADMIN, roles_enum_1.UserRoles.RECEPTIONIST),
-    __param(0, common_2.Req()),
+    (0, common_1.Get)(),
+    (0, roles_decorator_1.Roles)(roles_enum_1.UserRoles.ADMIN, roles_enum_1.UserRoles.RECEPTIONIST),
+    __param(0, (0, common_2.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], ReservationController.prototype, "getAll", null);
 __decorate([
-    common_1.Get("/:id"),
-    roles_decorator_1.Roles(roles_enum_1.UserRoles.ADMIN, roles_enum_1.UserRoles.RECEPTIONIST),
-    __param(0, common_1.Param("id")),
+    (0, common_1.Get)("/:id"),
+    (0, roles_decorator_1.Roles)(roles_enum_1.UserRoles.ADMIN, roles_enum_1.UserRoles.RECEPTIONIST),
+    __param(0, (0, common_1.Param)("id")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)
 ], ReservationController.prototype, "getById", null);
 __decorate([
-    public_decorator_1.Public(),
-    common_1.Get("app/data"),
-    __param(0, common_2.Req()),
+    (0, public_decorator_1.Public)(),
+    (0, common_1.Get)("app/data"),
+    __param(0, (0, common_2.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], ReservationController.prototype, "getApiData", null);
 __decorate([
-    common_1.Post("getMany"),
-    roles_decorator_1.Roles(roles_enum_1.UserRoles.ADMIN, roles_enum_1.UserRoles.RECEPTIONIST),
-    __param(0, common_1.Body()),
+    (0, common_1.Post)("getMany"),
+    (0, roles_decorator_1.Roles)(roles_enum_1.UserRoles.ADMIN, roles_enum_1.UserRoles.RECEPTIONIST),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [get_many_user_dto_1.GetManyDto]),
     __metadata("design:returntype", void 0)
 ], ReservationController.prototype, "getMany", null);
 __decorate([
-    common_1.Patch("/:id"),
-    roles_decorator_1.Roles(roles_enum_1.UserRoles.ADMIN, roles_enum_1.UserRoles.RECEPTIONIST),
-    __param(0, common_1.Param("id")),
-    __param(1, common_1.Body()),
-    __param(2, common_1.Res()),
+    (0, common_1.Patch)("/:id"),
+    (0, roles_decorator_1.Roles)(roles_enum_1.UserRoles.ADMIN, roles_enum_1.UserRoles.RECEPTIONIST),
+    __param(0, (0, common_1.Param)("id")),
+    __param(1, (0, common_1.Body)()),
+    __param(2, (0, common_1.Res)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, update_reservation_dto_1.UpdateReservationDto, Object]),
     __metadata("design:returntype", Promise)
 ], ReservationController.prototype, "update", null);
 __decorate([
-    common_1.Post("updateMany"),
-    roles_decorator_1.Roles(roles_enum_1.UserRoles.ADMIN, roles_enum_1.UserRoles.RECEPTIONIST),
-    __param(0, common_1.Body()),
+    (0, common_1.Post)("updateMany"),
+    (0, roles_decorator_1.Roles)(roles_enum_1.UserRoles.ADMIN, roles_enum_1.UserRoles.RECEPTIONIST),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [update_many_reservation_dto_1.UpdateManyReservationDto]),
     __metadata("design:returntype", void 0)
 ], ReservationController.prototype, "updateMany", null);
 __decorate([
-    common_1.Post(),
-    roles_decorator_1.Roles(roles_enum_1.UserRoles.ADMIN, roles_enum_1.UserRoles.RECEPTIONIST),
-    __param(0, common_1.Body()),
-    __param(1, common_1.Res()),
+    (0, common_1.Post)(),
+    (0, roles_decorator_1.Roles)(roles_enum_1.UserRoles.ADMIN, roles_enum_1.UserRoles.RECEPTIONIST),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Res)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [reservation_dto_1.ReservationDto, Object]),
     __metadata("design:returntype", Promise)
 ], ReservationController.prototype, "create", null);
 __decorate([
-    common_1.Delete("/:id"),
-    roles_decorator_1.Roles(roles_enum_1.UserRoles.ADMIN, roles_enum_1.UserRoles.RECEPTIONIST),
-    __param(0, common_1.Param("id")),
+    (0, common_1.Delete)("/:id"),
+    (0, roles_decorator_1.Roles)(roles_enum_1.UserRoles.ADMIN, roles_enum_1.UserRoles.RECEPTIONIST),
+    __param(0, (0, common_1.Param)("id")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)
 ], ReservationController.prototype, "deleteUser", null);
 __decorate([
-    common_1.Post("deleteMany"),
-    roles_decorator_1.Roles(roles_enum_1.UserRoles.ADMIN, roles_enum_1.UserRoles.RECEPTIONIST),
-    __param(0, common_1.Body()),
+    (0, common_1.Post)("deleteMany"),
+    (0, roles_decorator_1.Roles)(roles_enum_1.UserRoles.ADMIN, roles_enum_1.UserRoles.RECEPTIONIST),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [get_many_user_dto_1.GetManyDto]),
     __metadata("design:returntype", Promise)
 ], ReservationController.prototype, "deleteMany", null);
 __decorate([
-    common_1.Get("get/notification"),
-    __param(0, get_current_user_decorator_1.GetCurrentUser()),
+    (0, common_1.Get)("get/notification"),
+    __param(0, (0, get_current_user_decorator_1.GetCurrentUser)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], ReservationController.prototype, "getReservationByRole", null);
 __decorate([
-    common_1.Get("report/country"),
-    roles_decorator_1.Roles(roles_enum_1.UserRoles.ADMIN),
-    __param(0, common_1.Query()),
+    (0, common_1.Get)("report/country"),
+    (0, roles_decorator_1.Roles)(roles_enum_1.UserRoles.ADMIN),
+    __param(0, (0, common_1.Query)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], ReservationController.prototype, "getReportByCountry", null);
 __decorate([
-    common_1.Get("report/cash"),
-    roles_decorator_1.Roles(roles_enum_1.UserRoles.ADMIN),
-    __param(0, common_1.Query()),
+    (0, common_1.Post)("report/meals"),
+    (0, roles_decorator_1.Roles)(roles_enum_1.UserRoles.ADMIN),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [report_meals_dto_1.ReservationReportMealsDto]),
+    __metadata("design:returntype", Promise)
+], ReservationController.prototype, "getReportByMealCount", null);
+__decorate([
+    (0, common_1.Get)("report/payment"),
+    (0, roles_decorator_1.Roles)(roles_enum_1.UserRoles.ADMIN),
+    __param(0, (0, common_1.Query)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], ReservationController.prototype, "getReportByCash", null);
+__decorate([
+    (0, common_1.Get)("report/contact"),
+    (0, roles_decorator_1.Roles)(roles_enum_1.UserRoles.ADMIN),
+    __param(0, (0, common_1.Query)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], ReservationController.prototype, "getReportByDate", null);
+__decorate([
+    (0, common_1.Get)("report/daily"),
+    (0, roles_decorator_1.Roles)(roles_enum_1.UserRoles.ADMIN),
+    __param(0, (0, common_1.Query)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], ReservationController.prototype, "getDailyReport", null);
 ReservationController = __decorate([
-    swagger_1.ApiTags("Reservation"),
-    swagger_1.ApiBearerAuth(),
-    common_1.Controller("reservation"),
+    (0, swagger_1.ApiTags)("Reservation"),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.Controller)("reservation"),
     __metadata("design:paramtypes", [reservation_service_1.ReservationService])
 ], ReservationController);
 exports.ReservationController = ReservationController;

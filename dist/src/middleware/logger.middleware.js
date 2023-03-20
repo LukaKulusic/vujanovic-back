@@ -18,7 +18,7 @@ let LoggerMiddleware = class LoggerMiddleware {
     }
 };
 LoggerMiddleware = __decorate([
-    common_1.Injectable()
+    (0, common_1.Injectable)()
 ], LoggerMiddleware);
 exports.LoggerMiddleware = LoggerMiddleware;
 //# sourceMappingURL=logger.middleware.js.map

@@ -33,6 +33,15 @@ export class AccommodationService {
       total: result[1],
     };
   }
+  async findByIds(ids: number[]): Promise<Accommodation[]> {
+    const accommodations = await this.accommodationRepo
+      .createQueryBuilder('accommodation')
+      .where('accommodation.id IN (:...ids)', { ids: ids })
+      .getMany();
+    if (accommodations.length) {
+      return accommodations;
+    }
+  }
   async getMany(ids: Array<number>) {
     const result = await this.accommodationRepo
       .createQueryBuilder('accommodation')

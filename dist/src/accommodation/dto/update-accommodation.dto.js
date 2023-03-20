@@ -15,13 +15,13 @@ const class_validator_1 = require("class-validator");
 class UpdateAccommodationDto {
 }
 __decorate([
-    swagger_1.ApiProperty(),
-    class_validator_1.IsNumber(),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
 ], UpdateAccommodationDto.prototype, "id", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    class_validator_1.IsString(),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], UpdateAccommodationDto.prototype, "name", void 0);
 exports.UpdateAccommodationDto = UpdateAccommodationDto;

@@ -15,7 +15,7 @@ const payment_entity_1 = require("./entity/payment.entity");
 let PaymentModule = class PaymentModule {
 };
 PaymentModule = __decorate([
-    common_1.Module({
+    (0, common_1.Module)({
         imports: [typeorm_1.TypeOrmModule.forFeature([payment_entity_1.Payment])],
         providers: [payment_service_1.PaymentService],
         controllers: [payment_controller_1.PaymentController],

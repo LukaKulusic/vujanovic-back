@@ -1,4 +1,4 @@
-import { ReservationProgram } from 'src/reservation-program/entity/reservation-program.entity';
+import { ReservationDescriptionProgram } from 'src/reservation-description-program/entity/reservation-description-program.entity';
 import { BaseEntity } from 'typeorm';
 import { ProgramType } from './enum/program.enum';
 export declare class Program extends BaseEntity {
@@ -8,5 +8,5 @@ export declare class Program extends BaseEntity {
     type: ProgramType;
     createdDate: Date;
     updatedDate: Date;
-    programsToReservation: ReservationProgram[];
+    programsToDescription: ReservationDescriptionProgram[];
 }

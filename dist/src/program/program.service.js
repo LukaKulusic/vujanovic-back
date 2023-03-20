@@ -40,7 +40,7 @@ let ProgramService = class ProgramService {
         const keyword = query._q || "";
         let result = await this.programRepo.findAndCount({
             order: { id: query._sortOrder },
-            where: { title: typeorm_2.Like("%" + keyword + "%") },
+            where: { title: (0, typeorm_2.Like)("%" + keyword + "%") },
             skip: skip,
             take: take,
             select: {
@@ -178,8 +178,8 @@ let ProgramService = class ProgramService {
     }
 };
 ProgramService = __decorate([
-    common_1.Injectable(),
-    __param(0, typeorm_1.InjectRepository(program_entity_1.Program)),
+    (0, common_1.Injectable)(),
+    __param(0, (0, typeorm_1.InjectRepository)(program_entity_1.Program)),
     __metadata("design:paramtypes", [typeorm_2.Repository])
 ], ProgramService);
 exports.ProgramService = ProgramService;

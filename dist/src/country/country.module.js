@@ -15,7 +15,7 @@ const country_entity_1 = require("./entity/country.entity");
 let CountryModule = class CountryModule {
 };
 CountryModule = __decorate([
-    common_1.Module({
+    (0, common_1.Module)({
         imports: [typeorm_1.TypeOrmModule.forFeature([country_entity_1.Country])],
         providers: [country_service_1.CountryService],
         controllers: [country_controller_1.CountryController],

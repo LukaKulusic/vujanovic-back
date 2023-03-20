@@ -9,6 +9,7 @@ export declare class AccommodationService {
         data: Accommodation[];
         total: number;
     }>;
+    findByIds(ids: number[]): Promise<Accommodation[]>;
     getMany(ids: Array<number>): Promise<{
         data: Accommodation[];
     }>;

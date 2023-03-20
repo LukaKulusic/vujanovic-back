@@ -13,13 +13,16 @@ import { ProgramModule } from './program/program.module';
 import { ReservationModule } from './reservation/reservation.module';
 import { AccommodationModule } from './accommodation/accommodation.module';
 import { FoodModule } from './food/food.module';
-import { ReservationProgramModule } from './reservation-program/reservation-program.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { PaymentModule } from './payment/payment.module';
 import { JwtModule } from '@nestjs/jwt';
 import { RolesGuard } from './user/roles.guard';
 import { MailModule } from './mail/mail.module';
 import { LoggerMiddleware } from './middleware/logger.middleware';
+import { ReservationAccommodationModule } from './reservation-accommodation/reservation-accommodation.module';
+import { ReservationDescriptionModule } from './reservation-description/reservation-description.module';
+import { ReservationDescriptionFoodModule } from './reservation-description-food/reservation-description-food.module';
+import { ReservationDescriptionProgramModule } from './reservation-description-program/reservation-description-program.module';
 @Module({
   imports: [
     EventEmitterModule.forRoot(),
@@ -34,9 +37,12 @@ import { LoggerMiddleware } from './middleware/logger.middleware';
     ReservationModule,
     AccommodationModule,
     FoodModule,
-    ReservationProgramModule,
     PaymentModule,
     MailModule,
+    ReservationAccommodationModule,
+    ReservationDescriptionModule,
+    ReservationDescriptionFoodModule,
+    ReservationDescriptionProgramModule,
   ],
   providers: [
     {

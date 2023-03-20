@@ -15,14 +15,14 @@ const class_validator_1 = require("class-validator");
 class LoginDto {
 }
 __decorate([
-    swagger_1.ApiProperty(),
-    class_validator_1.IsString(),
-    class_validator_1.IsString(),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], LoginDto.prototype, "username", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    class_validator_1.IsString(),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], LoginDto.prototype, "password", void 0);
 exports.LoginDto = LoginDto;

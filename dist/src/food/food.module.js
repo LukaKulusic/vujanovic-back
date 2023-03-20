@@ -15,7 +15,7 @@ const food_entity_1 = require("./entity/food.entity");
 let FoodModule = class FoodModule {
 };
 FoodModule = __decorate([
-    common_1.Module({
+    (0, common_1.Module)({
         imports: [typeorm_1.TypeOrmModule.forFeature([food_entity_1.Food])],
         providers: [food_service_1.FoodService],
         controllers: [food_controller_1.FoodController],

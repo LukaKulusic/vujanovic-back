@@ -10,76 +10,85 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Reservation = void 0;
-const accommodation_entity_1 = require("../../accommodation/entity/accommodation.entity");
 const country_entity_1 = require("../../country/entity/country.entity");
-const food_entity_1 = require("../../food/entity/food.entity");
 const payment_entity_1 = require("../../payment/entity/payment.entity");
-const reservation_program_entity_1 = require("../../reservation-program/entity/reservation-program.entity");
+const reservation_accommodation_entity_1 = require("../../reservation-accommodation/entity/reservation-accommodation.entity");
+const reservation_description_entity_1 = require("../../reservation-description/entity/reservation-description.entity");
 const typeorm_1 = require("typeorm");
 let Reservation = class Reservation extends typeorm_1.BaseEntity {
 };
 __decorate([
-    typeorm_1.PrimaryGeneratedColumn('increment'),
+    (0, typeorm_1.PrimaryGeneratedColumn)("increment"),
     __metadata("design:type", Number)
 ], Reservation.prototype, "id", void 0);
 __decorate([
-    typeorm_1.Column(),
+    (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], Reservation.prototype, "name", void 0);
 __decorate([
-    typeorm_1.ManyToOne(() => country_entity_1.Country, (country) => country.reservations, {
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", String)
+], Reservation.prototype, "contact", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: "timestamp" }),
+    __metadata("design:type", Date)
+], Reservation.prototype, "dateFrom", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: "timestamp" }),
+    __metadata("design:type", Date)
+], Reservation.prototype, "dateTo", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", Number)
+], Reservation.prototype, "personNumber", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ default: 0 }),
+    __metadata("design:type", Number)
+], Reservation.prototype, "veganNumber", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ default: 0 }),
+    __metadata("design:type", Number)
+], Reservation.prototype, "vegetarianNumber", void 0);
+__decorate([
+    (0, typeorm_1.Column)("text", { nullable: true }),
+    __metadata("design:type", String)
+], Reservation.prototype, "paymentDetails", void 0);
+__decorate([
+    (0, typeorm_1.Column)("text", { nullable: true }),
+    __metadata("design:type", String)
+], Reservation.prototype, "desc", void 0);
+__decorate([
+    (0, typeorm_1.CreateDateColumn)({ type: "timestamp", select: false }),
+    __metadata("design:type", Date)
+], Reservation.prototype, "createdDate", void 0);
+__decorate([
+    (0, typeorm_1.UpdateDateColumn)({ type: "timestamp", select: false }),
+    __metadata("design:type", Date)
+], Reservation.prototype, "updatedDate", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => reservation_accommodation_entity_1.ReservationAccommodation, (accommodationToReservation) => accommodationToReservation.reservation, { cascade: true, eager: true }),
+    __metadata("design:type", Array)
+], Reservation.prototype, "accommodationsToReservation", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => reservation_description_entity_1.ReservationDescription, (description) => description.reservation, {
+        onDelete: "SET NULL",
+    }),
+    __metadata("design:type", Array)
+], Reservation.prototype, "descriptions", void 0);
+__decorate([
+    (0, typeorm_1.ManyToOne)(() => country_entity_1.Country, (country) => country.reservations, {
         nullable: true,
     }),
     __metadata("design:type", country_entity_1.Country)
 ], Reservation.prototype, "country", void 0);
 __decorate([
-    typeorm_1.Column(),
-    __metadata("design:type", Number)
-], Reservation.prototype, "personNumber", void 0);
-__decorate([
-    typeorm_1.Column({ default: 0 }),
-    __metadata("design:type", Number)
-], Reservation.prototype, "veganNumber", void 0);
-__decorate([
-    typeorm_1.Column({ type: 'timestamp' }),
-    __metadata("design:type", Date)
-], Reservation.prototype, "dateFrom", void 0);
-__decorate([
-    typeorm_1.Column({ type: 'timestamp' }),
-    __metadata("design:type", Date)
-], Reservation.prototype, "dateTo", void 0);
-__decorate([
-    typeorm_1.CreateDateColumn({ type: 'timestamp', select: false }),
-    __metadata("design:type", Date)
-], Reservation.prototype, "createdDate", void 0);
-__decorate([
-    typeorm_1.UpdateDateColumn({ type: 'timestamp', select: false }),
-    __metadata("design:type", Date)
-], Reservation.prototype, "updatedDate", void 0);
-__decorate([
-    typeorm_1.OneToMany(() => reservation_program_entity_1.ReservationProgram, (programToReservation) => programToReservation.reservation, { cascade: true, eager: true }),
-    __metadata("design:type", Array)
-], Reservation.prototype, "programsToReservation", void 0);
-__decorate([
-    typeorm_1.ManyToOne(() => food_entity_1.Food, (food) => food.reservations, {
-        nullable: true,
-    }),
-    __metadata("design:type", food_entity_1.Food)
-], Reservation.prototype, "food", void 0);
-__decorate([
-    typeorm_1.ManyToOne(() => accommodation_entity_1.Accommodation, (accommodation) => accommodation.reservations, {
-        nullable: true,
-    }),
-    __metadata("design:type", accommodation_entity_1.Accommodation)
-], Reservation.prototype, "accommodation", void 0);
-__decorate([
-    typeorm_1.ManyToOne(() => payment_entity_1.Payment, (payment) => payment.reservations, {
+    (0, typeorm_1.ManyToOne)(() => payment_entity_1.Payment, (payment) => payment.reservations, {
         nullable: true,
     }),
     __metadata("design:type", payment_entity_1.Payment)
 ], Reservation.prototype, "payment", void 0);
 Reservation = __decorate([
-    typeorm_1.Entity('reservation')
+    (0, typeorm_1.Entity)("reservation")
 ], Reservation);
 exports.Reservation = Reservation;
 //# sourceMappingURL=reservation.entity.js.map

@@ -15,7 +15,7 @@ const update_payment_dto_1 = require("./update-payment.dto");
 class UpdateManyPaymentDto {
 }
 __decorate([
-    swagger_1.ApiProperty({ isArray: true, type: update_payment_dto_1.UpdatePaymentDto }),
+    (0, swagger_1.ApiProperty)({ isArray: true, type: update_payment_dto_1.UpdatePaymentDto }),
     __metadata("design:type", Array)
 ], UpdateManyPaymentDto.prototype, "updateData", void 0);
 exports.UpdateManyPaymentDto = UpdateManyPaymentDto;

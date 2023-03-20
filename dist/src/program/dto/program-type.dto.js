@@ -15,10 +15,10 @@ const class_validator_1 = require("class-validator");
 class ProgramTypeDto {
 }
 __decorate([
-    swagger_1.ApiProperty(),
-    class_validator_1.IsNumber(),
-    class_validator_1.Min(1),
-    class_validator_1.Max(2),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsNumber)(),
+    (0, class_validator_1.Min)(1),
+    (0, class_validator_1.Max)(2),
     __metadata("design:type", Number)
 ], ProgramTypeDto.prototype, "id", void 0);
 exports.ProgramTypeDto = ProgramTypeDto;

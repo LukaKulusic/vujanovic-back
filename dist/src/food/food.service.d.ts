@@ -12,6 +12,7 @@ export declare class FoodService {
     getMany(ids: Array<number>): Promise<{
         data: Food[];
     }>;
+    findByIds(ids: number[]): Promise<Food[]>;
     getOne(id: number): Promise<{
         data: Food;
     }>;

@@ -44,30 +44,30 @@ let CountryController = class CountryController {
     }
 };
 __decorate([
-    common_1.Get(),
-    __param(0, common_2.Req()),
+    (0, common_1.Get)(),
+    __param(0, (0, common_2.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], CountryController.prototype, "getAll", null);
 __decorate([
-    common_1.Get('/:id'),
-    __param(0, common_1.Param('id')),
+    (0, common_1.Get)('/:id'),
+    __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
 ], CountryController.prototype, "getById", null);
 __decorate([
-    common_1.Get('/code/:code'),
-    __param(0, common_1.Param('code')),
+    (0, common_1.Get)('/code/:code'),
+    __param(0, (0, common_1.Param)('code')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], CountryController.prototype, "getByCode", null);
 CountryController = __decorate([
-    swagger_1.ApiTags('Country'),
-    swagger_1.ApiBearerAuth(),
-    common_1.Controller('country'),
+    (0, swagger_1.ApiTags)('Country'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.Controller)('country'),
     __metadata("design:paramtypes", [country_service_1.CountryService])
 ], CountryController);
 exports.CountryController = CountryController;

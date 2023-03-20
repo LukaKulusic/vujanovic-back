@@ -28,7 +28,7 @@ let AccommodationService = class AccommodationService {
         const keyword = query._q || '';
         let result = await this.accommodationRepo.findAndCount({
             order: { id: query._sortOrder },
-            where: { name: typeorm_2.Like('%' + keyword + '%') },
+            where: { name: (0, typeorm_2.Like)('%' + keyword + '%') },
             skip: skip,
             take: take,
             select: {
@@ -40,6 +40,15 @@ let AccommodationService = class AccommodationService {
             data: result[0],
             total: result[1],
         };
+    }
+    async findByIds(ids) {
+        const accommodations = await this.accommodationRepo
+            .createQueryBuilder('accommodation')
+            .where('accommodation.id IN (:...ids)', { ids: ids })
+            .getMany();
+        if (accommodations.length) {
+            return accommodations;
+        }
     }
     async getMany(ids) {
         const result = await this.accommodationRepo
@@ -129,8 +138,8 @@ let AccommodationService = class AccommodationService {
     }
 };
 AccommodationService = __decorate([
-    common_1.Injectable(),
-    __param(0, typeorm_1.InjectRepository(accommodation_entity_1.Accommodation)),
+    (0, common_1.Injectable)(),
+    __param(0, (0, typeorm_1.InjectRepository)(accommodation_entity_1.Accommodation)),
     __metadata("design:paramtypes", [typeorm_2.Repository])
 ], AccommodationService);
 exports.AccommodationService = AccommodationService;

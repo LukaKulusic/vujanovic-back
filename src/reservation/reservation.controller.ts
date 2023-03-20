@@ -24,6 +24,7 @@ import { GetCurrentUser } from "src/auth/decorator/get-current-user.decorator";
 import { GetManyDto } from "src/user/dto/get-many-user.dto";
 import { UpdateManyReservationDto } from "./dto/update-many-reservation.dto";
 import { Public } from "src/auth/decorator/public.decorator";
+import { ReservationReportMealsDto } from "./dto/report-meals.dto";
 @ApiTags("Reservation")
 @ApiBearerAuth()
 @Controller("reservation")
@@ -33,7 +34,8 @@ export class ReservationController {
   @Get()
   @Roles(UserRoles.ADMIN, UserRoles.RECEPTIONIST)
   async getAll(@Req() req: Request) {
-    return await this.reservationService.getList(req.query);
+    return await this.reservationService //.findReservationByRole(UserRoles.COOK);
+      .getList(req.query); //
   }
   @Get("/:id")
   @Roles(UserRoles.ADMIN, UserRoles.RECEPTIONIST)
@@ -75,7 +77,17 @@ export class ReservationController {
     if (updatedReservation) {
       res.send(updatedReservation);
 
-      const text = `Azurirana rezervacija id:${updatedReservation.data.id}, ime:${updatedReservation.data.name}, broj osoba:${updatedReservation.data.personNumber}, broj vegana:${updatedReservation.data.veganNumber}, od:${updatedReservation.data.dateFrom}, do:${updatedReservation.data.dateTo}, programi:[${updatedReservation.data["titles"]}], tip obroka:${updatedReservation.data.food.name}, tip placanja:${updatedReservation.data.payment.type}
+      const text = `Azurirana rezervacija id:${
+        updatedReservation.data.id
+      }, ime:${updatedReservation.data.name}, od:${
+        updatedReservation.data.dateFrom.toISOString().split("T")[0]
+      }, do:${
+        updatedReservation.data.dateTo.toISOString().split("T")[0]
+      }, broj osoba:${updatedReservation.data.personNumber}, broj vegana:${
+        updatedReservation.data.veganNumber
+      },  broj vegetarijanaca:${
+        updatedReservation.data.vegetarianNumber
+      }, smjestaj:[${updatedReservation.data["accommodationName"]}]
           `;
 
       await this.reservationService.newReservationEmail(text);
@@ -103,10 +115,19 @@ export class ReservationController {
       throw new HttpException("Invalid date input", HttpStatus.BAD_REQUEST);
     const reservation = await this.reservationService.create(body);
     const result = await this.reservationService.getOne(reservation.id);
+
     res.send(result);
 
     if (result) {
-      const text = `Nova rezervacija id:${reservation.id}, ime:${reservation.name}, broj osoba:${reservation.personNumber}, broj vegana:${reservation.veganNumber}, od:${reservation.dateFrom}, do:${reservation.dateTo}, programi:[${result.data["titles"]}], tip obroka:${reservation.food.name}, tip placanja:${reservation.payment.type}
+      const text = `Nova rezervacija id:${result.data.id}, ime:${
+        result.data.name
+      }, od:${result.data.dateFrom.toISOString().split("T")[0]}, do:${
+        result.data.dateTo.toISOString().split("T")[0]
+      }, broj osoba:${result.data.personNumber}, broj vegana:${
+        result.data.veganNumber
+      },  broj vegetarijanaca:${result.data.vegetarianNumber}, smjestaj:[${
+        result.data["accommodationName"]
+      }]
           `;
 
       await this.reservationService.newReservationEmail(text);
@@ -151,10 +172,42 @@ export class ReservationController {
       throw new HttpException("Bad request", HttpStatus.BAD_REQUEST);
     }
   }
-  @Get("report/cash")
+  @Post("report/meals")
+  @Roles(UserRoles.ADMIN)
+  async getReportByMealCount(@Body() body: ReservationReportMealsDto) {
+    const report = await this.reservationService.getReportByMealCount(
+      body.date
+    );
+    if (report) {
+      return report;
+    } else {
+      throw new HttpException("Bad request", HttpStatus.BAD_REQUEST);
+    }
+  }
+  @Get("report/payment")
   @Roles(UserRoles.ADMIN)
   async getReportByCash(@Query() query) {
-    const report = await this.reservationService.getReportByCash(query);
+    const report = await this.reservationService.getReportByPayment(query);
+    if (report) {
+      return report;
+    } else {
+      throw new HttpException("Bad request", HttpStatus.BAD_REQUEST);
+    }
+  }
+  @Get("report/contact")
+  @Roles(UserRoles.ADMIN)
+  async getReportByDate(@Query() query) {
+    const report = await this.reservationService.getReportByContact(query);
+    if (report) {
+      return report;
+    } else {
+      throw new HttpException("Bad request", HttpStatus.BAD_REQUEST);
+    }
+  }
+  @Get("report/daily")
+  @Roles(UserRoles.ADMIN)
+  async getDailyReport(@Query() query) {
+    const report = await this.reservationService.getDailyReport(query);
     if (report) {
       return report;
     } else {

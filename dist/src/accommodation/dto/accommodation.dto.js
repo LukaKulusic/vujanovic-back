@@ -15,8 +15,8 @@ const class_validator_1 = require("class-validator");
 class AccommodationDto {
 }
 __decorate([
-    swagger_1.ApiProperty(),
-    class_validator_1.IsString(),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], AccommodationDto.prototype, "name", void 0);
 exports.AccommodationDto = AccommodationDto;

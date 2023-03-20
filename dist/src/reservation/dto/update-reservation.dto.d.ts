@@ -1,13 +1,17 @@
-import { Dto } from './dto';
+import { ReservationDescriptionDto } from "./description.dto";
+import { UpdateDto } from "./dto";
 export declare class UpdateReservationDto {
     name: string;
     personNumber: number;
     veganNumber: number;
+    vegetarianNumber: number;
     dateFrom: Date;
     dateTo: Date;
-    programs: number[];
-    country: Dto;
-    accommodation: Dto;
-    food: Dto;
-    payment: Dto;
+    contact: string;
+    paymentDetails: string;
+    desc: string;
+    country: UpdateDto;
+    accommodations: number[];
+    payment: UpdateDto;
+    description: ReservationDescriptionDto[];
 }

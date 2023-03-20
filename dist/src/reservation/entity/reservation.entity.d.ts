@@ -1,21 +1,23 @@
-import { Accommodation } from 'src/accommodation/entity/accommodation.entity';
-import { Country } from 'src/country/entity/country.entity';
-import { Food } from 'src/food/entity/food.entity';
-import { Payment } from 'src/payment/entity/payment.entity';
-import { ReservationProgram } from 'src/reservation-program/entity/reservation-program.entity';
-import { BaseEntity } from 'typeorm';
+import { Country } from "src/country/entity/country.entity";
+import { Payment } from "src/payment/entity/payment.entity";
+import { ReservationAccommodation } from "src/reservation-accommodation/entity/reservation-accommodation.entity";
+import { ReservationDescription } from "src/reservation-description/entity/reservation-description.entity";
+import { BaseEntity } from "typeorm";
 export declare class Reservation extends BaseEntity {
     id: number;
     name: string;
-    country: Country;
-    personNumber: number;
-    veganNumber: number;
+    contact: string;
     dateFrom: Date;
     dateTo: Date;
+    personNumber: number;
+    veganNumber: number;
+    vegetarianNumber: number;
+    paymentDetails: string;
+    desc: string;
     createdDate: Date;
     updatedDate: Date;
-    programsToReservation: ReservationProgram[];
-    food: Food;
-    accommodation: Accommodation;
+    accommodationsToReservation: ReservationAccommodation[];
+    descriptions: ReservationDescription[];
+    country: Country;
     payment: Payment;
 }

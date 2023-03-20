@@ -15,74 +15,74 @@ const class_validator_1 = require("class-validator");
 class UpdateReservationsDto {
 }
 __decorate([
-    swagger_1.ApiProperty(),
-    class_validator_1.IsNumber(),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
 ], UpdateReservationsDto.prototype, "id", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    class_validator_1.IsOptional(),
-    class_validator_1.IsString(),
-    class_validator_1.MinLength(3, {
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.MinLength)(3, {
         message: 'Name is too short',
     }),
-    class_validator_1.MaxLength(20, {
+    (0, class_validator_1.MaxLength)(20, {
         message: 'Name is too long',
     }),
     __metadata("design:type", String)
 ], UpdateReservationsDto.prototype, "name", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    class_validator_1.IsOptional(),
-    class_validator_1.IsNumber(),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
 ], UpdateReservationsDto.prototype, "personNumber", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    class_validator_1.IsOptional(),
-    class_validator_1.IsNumber(),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
 ], UpdateReservationsDto.prototype, "veganNumber", void 0);
 __decorate([
-    class_validator_1.IsOptional(),
-    swagger_1.ApiProperty(),
-    class_validator_1.IsDate(),
+    (0, class_validator_1.IsOptional)(),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsDate)(),
     __metadata("design:type", Date)
 ], UpdateReservationsDto.prototype, "dateFrom", void 0);
 __decorate([
-    class_validator_1.IsOptional(),
-    swagger_1.ApiProperty(),
-    class_validator_1.IsDate(),
+    (0, class_validator_1.IsOptional)(),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsDate)(),
     __metadata("design:type", Date)
 ], UpdateReservationsDto.prototype, "dateTo", void 0);
 __decorate([
-    swagger_1.ApiProperty({ type: 'integer', isArray: true }),
-    class_validator_1.IsOptional(),
+    (0, swagger_1.ApiProperty)({ type: 'integer', isArray: true }),
+    (0, class_validator_1.IsOptional)(),
     __metadata("design:type", Array)
 ], UpdateReservationsDto.prototype, "programs", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    class_validator_1.IsOptional(),
-    class_validator_1.IsString(),
-    class_validator_1.IsOptional(),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], UpdateReservationsDto.prototype, "countryCode", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    class_validator_1.IsNumber(),
-    class_validator_1.IsOptional(),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsNumber)(),
+    (0, class_validator_1.IsOptional)(),
     __metadata("design:type", Number)
 ], UpdateReservationsDto.prototype, "accommodation", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    class_validator_1.IsNumber(),
-    class_validator_1.IsOptional(),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsNumber)(),
+    (0, class_validator_1.IsOptional)(),
     __metadata("design:type", Number)
 ], UpdateReservationsDto.prototype, "food", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    class_validator_1.IsNumber(),
-    class_validator_1.IsOptional(),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsNumber)(),
+    (0, class_validator_1.IsOptional)(),
     __metadata("design:type", Number)
 ], UpdateReservationsDto.prototype, "payment", void 0);
 exports.UpdateReservationsDto = UpdateReservationsDto;

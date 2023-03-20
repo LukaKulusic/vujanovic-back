@@ -17,31 +17,31 @@ const program_type_dto_1 = require("./program-type.dto");
 class UpdateProgramDto {
 }
 __decorate([
-    swagger_1.ApiProperty(),
-    class_validator_1.IsOptional(),
-    class_validator_1.IsString(),
-    class_validator_1.MinLength(1, {
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.MinLength)(1, {
         message: " Title is too short",
     }),
-    class_validator_1.MaxLength(40, {
+    (0, class_validator_1.MaxLength)(40, {
         message: "Title is too long",
     }),
     __metadata("design:type", String)
 ], UpdateProgramDto.prototype, "title", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    class_validator_1.IsOptional(),
-    class_validator_1.IsString(),
-    class_validator_1.MinLength(5, {
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.MinLength)(5, {
         message: "Description is too short",
     }),
     __metadata("design:type", String)
 ], UpdateProgramDto.prototype, "description", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    class_validator_1.IsOptional(),
-    class_validator_1.ValidateNested(),
-    class_transformer_1.Type(() => program_type_dto_1.ProgramTypeDto),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.ValidateNested)(),
+    (0, class_transformer_1.Type)(() => program_type_dto_1.ProgramTypeDto),
     __metadata("design:type", program_type_dto_1.ProgramTypeDto)
 ], UpdateProgramDto.prototype, "type", void 0);
 exports.UpdateProgramDto = UpdateProgramDto;

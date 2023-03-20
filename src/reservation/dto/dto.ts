@@ -6,3 +6,8 @@ export class Dto {
   @IsNumber()
   id: number;
 }
+
+export class UpdateDto {
+  @ApiProperty()
+  id: number | null;
+}

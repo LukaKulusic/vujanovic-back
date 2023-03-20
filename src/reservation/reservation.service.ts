@@ -1,8 +1,14 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import {
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import {
   Between,
   DataSource,
+  Equal,
   ILike,
   In,
   LessThanOrEqual,
@@ -15,19 +21,16 @@ import { ReservationDto } from "./dto/reservation.dto";
 import { Reservation } from "./entity/reservation.entity";
 import { UserRoles, UserRolesObject } from "../user/entity/enum/roles.enum";
 import { CountryService } from "src/country/country.service";
-import { FoodService } from "src/food/food.service";
 import { AccommodationService } from "src/accommodation/accommodation.service";
-import { IFilterReservationQuery } from "./interface/filter-reservation.interface";
 import { UpdateReservationsDto } from "./dto/update-reservations.dto";
 import { PaymentService } from "src/payment/payment.service";
-import { ProgramService } from "src/program/program.service";
-import { ReservationProgramService } from "src/reservation-program/reservation-program.service";
 import { ProgramTypeObject } from "src/program/entity/enum/program.enum";
-import { ReportByCountryDto } from "./dto/report-country.dto";
-import { ReportByCashDto } from "./dto/report-cash.dto";
 import { MailService } from "src/mail/mail.service";
 import { Cron } from "@nestjs/schedule";
 import { UserService } from "src/user/user.service";
+import { ReservationAccommodationService } from "src/reservation-accommodation/reservation-accommodation.service";
+import { ReservationDescriptionService } from "src/reservation-description/reservation-description.service";
+import { count } from "console";
 
 @Injectable()
 export class ReservationService {
@@ -35,63 +38,115 @@ export class ReservationService {
     @InjectRepository(Reservation)
     private reservationRepo: Repository<Reservation>,
     private readonly countryService: CountryService,
-    private readonly foodService: FoodService,
     private readonly accommodationService: AccommodationService,
     private readonly paymentService: PaymentService,
-    private readonly reservationProgramService: ReservationProgramService,
-    private readonly programService: ProgramService,
     private readonly userService: UserService,
     private readonly mailService: MailService,
-    private readonly dataSource: DataSource
+    private readonly dataSource: DataSource,
+    private readonly reservationAccommodationService: ReservationAccommodationService,
+    private readonly reservationDescriptionService: ReservationDescriptionService
   ) {}
 
   async getList(query) {
-    const take = query._perPage || 10;
+    const take = query._perPage || 50;
     const page = query._page || 1;
     const skip = (page - 1) * take;
     const keyword = query._q || "";
+    const order = query._sortOrder || "DESC";
+
+    let dateFrom = query.dateFrom;
+    let dateTo = query.dateTo;
+    if (!dateFrom) dateFrom = new Date().toISOString().split("T")[0];
+
+    if (!dateTo) {
+      const date = new Date(dateFrom);
+      date.setDate(date.getDate() + 1);
+      dateTo = date.toISOString().split("T")[0];
+    }
+
     const result = await this.reservationRepo
       .createQueryBuilder("reservation")
       .select([
         "reservation.id",
         "reservation.name",
+        "reservation.contact",
         "reservation.personNumber",
         "reservation.veganNumber",
+        "reservation.vegetarianNumber",
+        "reservation.paymentDetails",
         "reservation.dateFrom",
         "reservation.dateTo",
       ])
-      .addSelect(["food.id", "food.name"])
+      .addSelect(["accommodationsToReservation"])
       .addSelect(["accommodation.id", "accommodation.name"])
       .addSelect(["payment.id", "payment.type"])
       .addSelect(["country.id", "country.name"])
-      .addSelect(["programsToReservation"])
+      .addSelect(["description"])
+      .addSelect(["programsToDescriptions"])
       .addSelect(["program.id", "program.title", "program.type"])
-      .innerJoin("reservation.food", "food")
-      .innerJoin("reservation.accommodation", "accommodation")
-      .innerJoin("reservation.payment", "payment")
-      .innerJoin("reservation.country", "country")
-      .innerJoin("reservation.programsToReservation", "programsToReservation")
-      .innerJoin("programsToReservation.program", "program")
-      .where("reservation.name like :name", { name: `%${keyword}%` })
-      .orderBy("reservation.id", query._sortOrder)
-      .take(take)
-      .skip(skip)
+      .addSelect(["foodToDescriptions"])
+      .addSelect(["food.id", "food.name"])
+
+      .leftJoin(
+        "reservation.accommodationsToReservation",
+        "accommodationsToReservation"
+      )
+      .leftJoin("accommodationsToReservation.accommodation", "accommodation")
+      .leftJoinAndSelect("reservation.payment", "payment")
+      .leftJoin("reservation.country", "country")
+      .leftJoin("reservation.descriptions", "description")
+      .leftJoin("description.programsToDescriptions", "programsToDescriptions")
+      .leftJoin("programsToDescriptions.program", "program")
+      .leftJoin("description.foodToDescriptions", "foodToDescriptions")
+      .leftJoin("foodToDescriptions.food", "food")
+      .where(
+        `reservation.dateFrom BETWEEN '${new Date(
+          dateFrom
+        ).toISOString()}' AND '${new Date(dateTo).toISOString()}'`
+      )
+      .andWhere("reservation.name like :name", { name: `%${keyword}%` })
+      .orderBy("reservation.dateFrom", order)
+      .addOrderBy("reservation.id", order)
+      .addOrderBy("accommodation.id", "ASC")
       .getManyAndCount();
+
     const reservations = result[0];
     const data = reservations.map((reservation) => {
-      const programs = reservation.programsToReservation.map((element) => {
-        element.program["name"] = element.program.title;
-        delete element.program.title;
-        return element.program;
+      const data = reservation.descriptions.map((element) => {
+        const data = new Object();
+        data["date"] = element.date.toISOString().split("T")[0];
+
+        // data["programTitles"] = element.programsToDescriptions.map((e) => {
+        //   return e.program.title;
+        // });
+        data["programIds"] = element.programsToDescriptions.map((e) => {
+          return e.program.id;
+        });
+
+        // data["foodNames"] = element.foodToDescriptions.map((e) => {
+        //   return e.food.name;
+        // });
+        data["foodIds"] = element.foodToDescriptions.map((e) => {
+          return e.food.id;
+        });
+
+        return data;
       });
 
-      reservation["programs"] = programs;
-      delete reservation.programsToReservation;
+      const accommodations = reservation.accommodationsToReservation.map(
+        (element) => {
+          return element.accommodation;
+        }
+      );
+      reservation["accommodations"] = accommodations;
+      reservation["description"] = data;
+      delete reservation.descriptions;
+      delete reservation.accommodationsToReservation;
       return reservation;
     });
 
     return {
-      data: data,
+      data: this.paginate(result[0], page, take),
       total: result[1],
     };
   }
@@ -159,61 +214,74 @@ export class ReservationService {
     }
     return reservation;
   }
-  // async getOne(id: number) {
-  //   const result = await this.reservationRepo.findOne({
-  //     where: { id: id },
-  //     relations: [
-  //       'food',
-  //       'accommodation',
-  //       'payment',
-  //       'country',
-  //       'programsToReservation.program',
-  //     ],
-  //   });
-  //   if (!result) {
-  //     throw new HttpException('Reservation not found', HttpStatus.NOT_FOUND);
-  //   }
-  //   return { data: result };
-  // }
 
   async getOne(id: number) {
-    const result = await this.reservationRepo
-      .createQueryBuilder("reservation")
-      .select([
-        "reservation.id",
-        "reservation.name",
-        "reservation.personNumber",
-        "reservation.veganNumber",
-        "reservation.dateFrom",
-        "reservation.dateTo",
-      ])
-      .addSelect(["food.id", "food.name"])
-      .addSelect(["accommodation.id", "accommodation.name"])
-      .addSelect(["payment.id", "payment.type"])
-      .addSelect(["country.id", "country.name"])
-      .addSelect(["programsToReservation"])
-      .addSelect(["program.id", "program.title", "program.type"])
-      .innerJoin("reservation.food", "food")
-      .innerJoin("reservation.accommodation", "accommodation")
-      .innerJoin("reservation.payment", "payment")
-      .innerJoin("reservation.country", "country")
-      .innerJoin("reservation.programsToReservation", "programsToReservation")
-      .innerJoin("programsToReservation.program", "program")
-      .where("reservation.id = :id", { id })
-      .getOne();
+    const result = await this.reservationRepo.findOne({
+      where: { id: id },
+      relations: {
+        descriptions: {
+          foodToDescriptions: { food: true },
+          programsToDescriptions: { program: true },
+        },
 
+        payment: true,
+        country: true,
+        accommodationsToReservation: { accommodation: true },
+      },
+      order: {
+        descriptions: {
+          date: "ASC",
+          programsToDescriptions: {
+            id: "ASC",
+          },
+          foodToDescriptions: {
+            id: "ASC",
+          },
+        },
+        accommodationsToReservation: {
+          id: "ASC",
+        },
+      },
+    });
     if (!result) {
       throw new HttpException("Reservation not found", HttpStatus.NOT_FOUND);
     }
-    const programs = result.programsToReservation.map((element) => {
-      return element.program.id;
+    const data = result.descriptions.map((e) => {
+      const data = new Object();
+      data["date"] = e.date.toISOString().split("T")[0];
+
+      // data["programTitles"] = e.programsToDescriptions.map((e) => {
+      //   return e.program.title;
+      // });
+
+      data["programIds"] = e.programsToDescriptions.map((e) => {
+        return e.program.id;
+      });
+
+      // data["foodNames"] = e.foodToDescriptions.map((e) => {
+      //   return e.food.name;
+      // });
+      data["foodIds"] = e.foodToDescriptions.map((e) => {
+        return e.food.id;
+      });
+
+      return data;
     });
-    const programTitles = result.programsToReservation.map((element) => {
-      return element.program.title;
+
+    const accommodations = result.accommodationsToReservation.map((element) => {
+      return element.accommodation.id;
     });
-    result["programs"] = programs;
-    result["titles"] = programTitles;
-    delete result.programsToReservation;
+    const accommodationNames = result.accommodationsToReservation.map(
+      (element) => {
+        return element.accommodation.name;
+      }
+    );
+    result["undefined"] = data;
+    result["description"] = data;
+    delete result.descriptions;
+    result["accommodations"] = accommodations;
+    result["accommodationName"] = accommodationNames;
+    delete result.accommodationsToReservation;
 
     return { data: result };
   }
@@ -236,35 +304,40 @@ export class ReservationService {
 
   async create(body: ReservationDto): Promise<Reservation> {
     try {
-      let country;
-      if (body.country) {
-        country = await this.countryService.findOne(body.country.id);
+      const { country, payment, accommodations, description, ...reservation } =
+        body;
+      const newReservation = this.reservationRepo.create({
+        ...reservation,
+      });
+
+      if (body.country.id > 0) {
+        const country = await this.countryService.findOne(body.country.id);
+        newReservation.country = country;
       }
-      const food = await this.foodService.findOne(body.food.id);
-      const accommodation = await this.accommodationService.findOne(
-        body.accommodation.id
-      );
-      const payment = await this.paymentService.findOne(body.payment.id);
-
-      if (food && accommodation && payment) {
-        const newReservation = this.reservationRepo.create({
-          ...body,
-          country,
-          food,
-          accommodation,
-          payment,
-        });
-        const reservation = await this.reservationRepo.save(newReservation);
-
-        const programs = await this.programService.findByIds(body.programs);
-        if (reservation && programs) {
-          for (const program of programs) {
-            await this.reservationProgramService.create(reservation, program);
-          }
-
-          return reservation;
+      if (body.payment.id > 0) {
+        const payment = await this.paymentService.findOne(body.payment.id);
+        newReservation.payment = payment;
+      }
+      await this.reservationRepo.save(newReservation);
+      if (body.description) {
+        for (const desc of body.description) {
+          await this.reservationDescriptionService.create(desc, newReservation);
         }
-      } else throw new HttpException(`Bad request! `, HttpStatus.BAD_REQUEST);
+      }
+      if (body.accommodations) {
+        const accommodations = await this.accommodationService.findByIds(
+          body.accommodations
+        );
+        if (accommodations) {
+          for (const accommodation of accommodations) {
+            await this.reservationAccommodationService.create(
+              newReservation,
+              accommodation
+            );
+          }
+        }
+      }
+      return newReservation;
     } catch (error) {
       throw new HttpException(
         `Bad request!${error.message} `,
@@ -277,39 +350,51 @@ export class ReservationService {
     try {
       const alreadyReservation = await this.reservationRepo.findOneBy({ id });
       let reservation;
+
       if (alreadyReservation) {
-        if (body.accommodation) {
-          const accommodation = await this.accommodationService.findOne(
-            body.accommodation.id
-          );
-          alreadyReservation.accommodation = accommodation;
-        }
-        if (body.food) {
-          const food = await this.foodService.findOne(body.food.id);
-          alreadyReservation.food = food;
-        }
-        if (body.country) {
+        const { country, payment, accommodations, description, ...updateBody } =
+          body;
+
+        alreadyReservation.country = null;
+        alreadyReservation.payment = null;
+        alreadyReservation.accommodationsToReservation = null;
+
+        if (body.country.id > 0) {
           const country = await this.countryService.findOne(body.country.id);
           alreadyReservation.country = country;
         }
-        if (body.payment) {
+        if (body.payment.id > 0) {
           const payment = await this.paymentService.findOne(body.payment.id);
           alreadyReservation.payment = payment;
         }
 
         reservation = await this.reservationRepo.save(
-          Object.assign(alreadyReservation, body)
+          Object.assign(alreadyReservation, updateBody)
         );
 
-        if (body.programs) {
-          await this.reservationProgramService.deleteByReservationId(
+        if (body.accommodations.length) {
+          await this.reservationAccommodationService.deleteByReservationId(
             reservation.id
           );
-          const programs = await this.programService.findByIds(body.programs);
-          if (reservation && programs) {
-            for (const program of programs) {
-              await this.reservationProgramService.create(reservation, program);
+          const accommodations = await this.accommodationService.findByIds(
+            body.accommodations
+          );
+
+          if (reservation && accommodations) {
+            for (const accommodation of accommodations) {
+              await this.reservationAccommodationService.create(
+                reservation,
+                accommodation
+              );
             }
+          }
+        }
+        if (body.description) {
+          await this.reservationDescriptionService.deleteByReservationId(
+            reservation.id
+          );
+          for (const desc of body.description) {
+            await this.reservationDescriptionService.create(desc, reservation);
           }
         }
         return await this.getOne(id);
@@ -352,42 +437,9 @@ export class ReservationService {
       .execute();
     if (result) return { data: [result.affected] };
   }
-  async findAllReservationWithFilters(
-    query: IFilterReservationQuery,
-    take: number,
-    skip: number
-  ) {
-    const { fromDate, toDate, food, accommodation, program, country } = query;
-
-    const filters = [];
-    if (food) filters.push({ food: { id: In([...food]) } });
-    if (accommodation)
-      filters.push({ accommodation: { id: In([...accommodation]) } });
-    if (country) filters.push({ country: { id: In([...country]) } });
-    if (program)
-      filters.push({ programsToReservation: { id: In([...program]) } });
-
-    if (fromDate && toDate) {
-      filters.push({ dateFrom: MoreThanOrEqual(fromDate) });
-      filters.push({ dateTo: LessThanOrEqual(toDate) });
-    }
-    console.log(filters);
-    const reservations = await this.reservationRepo.findAndCount({
-      relations: [
-        "food",
-        "accommodation",
-        "country",
-        "programsToReservation",
-        "programsToReservation.program",
-      ],
-      where: [...filters],
-    });
-    return reservations;
-  }
   async findReservationByRole(role: UserRoles) {
     const date = new Date();
     date.setDate(date.getDate() + 7);
-
     const dateString = date.toISOString().split("T")[0];
 
     const reservations = await this.reservationRepo
@@ -395,190 +447,269 @@ export class ReservationService {
       .select([
         "reservation.id",
         "reservation.name",
+        "reservation.contact",
         "reservation.personNumber",
         "reservation.veganNumber",
+        "reservation.vegetarianNumber",
+        "reservation.paymentDetails",
         "reservation.dateFrom",
         "reservation.dateTo",
       ])
-      .addSelect(["food.id", "food.name"])
+      .addSelect(["accommodationsToReservation"])
       .addSelect(["accommodation.id", "accommodation.name"])
       .addSelect(["payment.id", "payment.type"])
       .addSelect(["country.id", "country.name"])
-      .addSelect(["programsToReservation"])
+      .addSelect(["description"])
+      .addSelect(["programsToDescriptions"])
       .addSelect(["program.id", "program.title", "program.type"])
-      .innerJoin("reservation.food", "food")
-      .innerJoin("reservation.accommodation", "accommodation")
-      .innerJoin("reservation.payment", "payment")
-      .innerJoin("reservation.country", "country")
-      .innerJoin("reservation.programsToReservation", "programsToReservation")
-      .innerJoin("programsToReservation.program", "program")
+      .addSelect(["foodToDescriptions"])
+      .addSelect(["food.id", "food.name"])
+
+      .leftJoin(
+        "reservation.accommodationsToReservation",
+        "accommodationsToReservation"
+      )
+      .leftJoin("accommodationsToReservation.accommodation", "accommodation")
+      .leftJoinAndSelect("reservation.payment", "payment")
+      .leftJoin("reservation.country", "country")
+      .leftJoin("reservation.descriptions", "description")
+      .leftJoin("description.programsToDescriptions", "programsToDescriptions")
+      .leftJoin("programsToDescriptions.program", "program")
+      .leftJoin("description.foodToDescriptions", "foodToDescriptions")
+      .leftJoin("foodToDescriptions.food", "food")
       .where("reservation.dateFrom =:date", {
         date: dateString,
       })
       .orderBy("reservation.id", "ASC")
+      .orderBy("accommodation.id", "ASC")
+      .orderBy("program.id", "ASC")
       .getManyAndCount();
 
     if (reservations[1] === 0) return { data: "" };
 
-    if (role === UserRoles.ADMIN) {
+    if (role === UserRoles.ADMIN || role === UserRoles.RECEPTIONIST) {
       //ADMIN
       let text = "";
+      let programData = "";
+      let foodData = "";
+      let country = "";
+      let payment = "";
+      let total = 0;
+      let totalVegan = 0;
+      let totalVegetarian = 0;
+
       for (const reservation of reservations[0]) {
-        const programs = [];
-        programs.push(
-          reservation.programsToReservation.map((e) => {
+        const description = reservation.descriptions.map((element) => {
+          const data = new Object();
+          data["date"] = element.date.toISOString().split("T")[0];
+
+          data["programTitles"] = element.programsToDescriptions.map((e) => {
             return e.program.title;
-          })
+          });
+
+          data["foodNames"] = element.foodToDescriptions.map((e) => {
+            return e.food.name;
+          });
+          return data;
+        });
+        const accommodations = reservation.accommodationsToReservation.map(
+          (element) => {
+            return element.accommodation.name;
+          }
         );
-        let data = `[id:${reservation.id}, ime:${
-          reservation.name
-        }, broj osoba:${reservation.personNumber}, smestaj:${
-          reservation.accommodation.name
-        }, od:${reservation.dateFrom.toISOString().split("T")[0]}, do:${
+
+        reservation["accommodations"] = accommodations;
+        reservation["description"] = description;
+        delete reservation.descriptions;
+        delete reservation.accommodationsToReservation;
+
+        reservation["description"].map((e) => {
+          programData += `(Datum: ${e.date}, programi:[${e.programTitles}]); `;
+        });
+
+        reservation["description"].map((e) => {
+          foodData += `Datum: ${e.date}, obroci:[${e.foodNames}]; `;
+        });
+        if (reservation.payment) payment = reservation.payment.type;
+        if (reservation.country) country = reservation.country.name;
+
+        total += reservation.personNumber;
+        totalVegan += reservation.veganNumber;
+        totalVegetarian += reservation.vegetarianNumber;
+        let data = `[
+          |id:${reservation.id}, ime:${reservation.name}, broj osoba:${
+          reservation.personNumber
+        }, broj vegana:${reservation.veganNumber}, broj vegetarijanaca:${
+          reservation.personNumber
+        }, smestaj:[${reservation["accommodations"]}],od:${
+          reservation.dateFrom.toISOString().split("T")[0]
+        }, do:${
           reservation.dateTo.toISOString().split("T")[0]
-        }], programi:[${programs}], tip obroka:${
-          reservation.food.name
-        }, tip placanja:${reservation.payment.type}],   `;
+        }], programi:[${programData}], tip obroka:[${foodData}], tip placanja:${payment}], detalji placanja:${
+          reservation.paymentDetails
+        }, drzava:${country};|
+        `;
         text += data;
       }
 
-      const textAdmin = ` Broj rezervacija:${reservations[1]}, datum: ${dateString} :${text} `;
+      const textAdmin = `Broj rezervacija:${reservations[1]},ukupno osoba:${total}, ukupno vegana:${totalVegan},ukupno vegetarijanaca:${totalVegetarian}, datum: ${dateString}, opis:${text} `;
+
       return {
         data: textAdmin,
       };
-    } else if (role === UserRoles.RECEPTIONIST) {
-      //RECEPTIONIST
-      let text = "";
-      for (const reservation of reservations[0]) {
-        const programs = [];
-        programs.push(
-          reservation.programsToReservation.map((e) => {
-            return e.program.title;
-          })
-        );
-        let data = `[id:${reservation.id}, ime:${
-          reservation.name
-        }, broj osoba:${reservation.personNumber}, smestaj:${
-          reservation.accommodation.name
-        }, od:${reservation.dateFrom.toISOString().split("T")[0]}, do:${
-          reservation.dateTo.toISOString().split("T")[0]
-        }], programi:[${programs}], tip obroka:${
-          reservation.food.name
-        }, tip placanja:${reservation.payment.type}
-      ]   ,`;
-        text += data;
-      }
-
-      const textReceptionist = ` Broj rezervacija:${reservations[1]}, datum: ${dateString} :${text} `;
-      return {
-        data: textReceptionist,
-      };
-    }
-
-    if (role === UserRoles.TOUR_GUIDE) {
+    } else if (role === UserRoles.TOUR_GUIDE) {
       //TOUR GUIDE
       let text = "";
+      let programData = "";
+      let country = "";
+      let total = 0;
 
       for (const reservation of reservations[0]) {
-        const programs = [];
-        programs.push(
-          reservation.programsToReservation.map((e) => {
+        const description = reservation.descriptions.map((element) => {
+          const data = new Object();
+          data["date"] = element.date.toISOString().split("T")[0];
+
+          data["programTitles"] = element.programsToDescriptions.map((e) => {
             return e.program.title;
-          })
-        );
-        let data = `[id:${reservation.id}, ime:${
-          reservation.name
-        }, broj osoba:${reservation.personNumber}, programi:[${programs}], od:${
-          reservation.dateFrom.toISOString().split("T")[0]
-        }, do:${reservation.dateTo.toISOString().split("T")[0]}], 
-                                                 
-          `;
+          });
+
+          return data;
+        });
+
+        reservation["description"] = description;
+        delete reservation.descriptions;
+
+        reservation["description"].map((e) => {
+          programData += `(Datum: ${e.date}, programi:[${e.programTitles}]); `;
+        });
+
+        if (reservation.country) country = reservation.country.name;
+        total += reservation.personNumber;
+        let data = `[|rezervacija:${reservation.id}, broj osoba:${
+          reservation.personNumber
+        }, od:${reservation.dateFrom.toISOString().split("T")[0]}, do:${
+          reservation.dateTo.toISOString().split("T")[0]
+        }], programi:[${programData}], drzava:${country};|
+        `;
         text += data;
       }
-      const textTourGuide = ` Broj rezervacija:${reservations[1]}, datum: ${dateString} \n :${text} `;
+
+      const textTourGuide = `Broj rezervacija:${reservations[1]}, ukupno osoba:${total}, datum: ${dateString}:
+      ${text} `;
       return {
         data: textTourGuide,
       };
     } else if (role === UserRoles.COOK) {
       //COOK
-      // const meals = await this.reservationRepo
-      //   .createQueryBuilder('reservation')
-      //   .leftJoin('reservation.food', 'food')
-      //   .where('reservation.dateFrom =:date', {
-      //     date: dateString,
-      //   })
-      //   .select('sum(reservation.personNumber)', 'total')
-      //   .addSelect('food.name')
-      //   .addSelect('sum(reservation.veganNumber)', 'totalVegan')
-      //   .groupBy('food.name')
-      //   .getRawMany();
-
       let text = "";
-      let total: number = 0;
-      let totalVegan: number = 0;
+      let foodData = "";
+      let total = 0;
+      let totalVegan = 0;
+      let totalVegetarian = 0;
 
       for (const reservation of reservations[0]) {
-        let data = `[id:${reservation.id}, ime:${
-          reservation.name
-        }, broj osoba:${reservation.personNumber},broj vegana:${
-          reservation.veganNumber
-        }, tip obroka:${reservation.food.name}, od:${
-          reservation.dateFrom.toISOString().split("T")[0]
-        }, do:${reservation.dateTo.toISOString().split("T")[0]}], 
-                                                 
-          `;
-        text += data;
+        const description = reservation.descriptions.map((element) => {
+          const data = new Object();
+          data["date"] = element.date.toISOString().split("T")[0];
+
+          data["foodNames"] = element.foodToDescriptions.map((e) => {
+            return e.food.name;
+          });
+          return data;
+        });
+
+        reservation["description"] = description;
+        delete reservation.descriptions;
+
+        reservation["description"].map((e) => {
+          foodData += `(Datum: ${e.date}, obroci:[${e.foodNames}]); `;
+        });
+
         total += reservation.personNumber;
         totalVegan += reservation.veganNumber;
+        totalVegetarian += reservation.vegetarianNumber;
+        let data = `[| rezervacija:${reservation.id}, broj osoba:${
+          reservation.personNumber
+        }, broj vegana:${reservation.veganNumber}, broj vegetarijanaca:${
+          reservation.personNumber
+        },od:${reservation.dateFrom.toISOString().split("T")[0]}, do:${
+          reservation.dateTo.toISOString().split("T")[0]
+        }, obroci:${foodData}];
+        `;
+        text += data;
       }
 
-      const textCook = ` Broj rezervacija:${reservations[1]}, datum: ${dateString},ukupno:${total}, vegana:${totalVegan} \n :${text} }`;
+      const textCook = `Broj rezervacija:${reservations[1]}, datum: ${dateString}, ukupno osoba:${total}, ukupno vegana:${totalVegan}, ukupno vegetarijanaca:${totalVegetarian}, \n :${text} }`;
       return {
         data: textCook,
       };
+    }
+  }
+  async getReportByMealCount(date) {
+    try {
+      let count = [];
+      if (date) {
+        const dateAt = date.split("T")[0];
+        count = await this.reservationRepo.query(`
+      select "food"."id" , "food"."name" , SUM("personNumber") as total,SUM("veganNumber") as vegan,SUM("vegetarianNumber") as vegetarian from "reservation"
+      inner join "reservation_description" on "reservation_description"."reservationId" = "reservation"."id"
+      inner join "reservation_description_food" on "reservation_description_food"."descriptionId" = "reservation_description"."id"
+      inner join "food" on "food".id = "reservation_description_food"."foodId"
+      where "reservation_description"."date"::date = '${dateAt}'
+      group by food.name, food.id
+      order by food.id ASC
+   `);
+      }
+      const total = count.length;
+      return { data: count, total };
+    } catch (error) {
+      throw new BadRequestException(error.message);
     }
   }
   async getReportByCountry(query) {
     const take = query._perPage || 10;
     const page = query._page || 1;
     const skip = (page - 1) * take;
-    const keyword = query._q || "";
+
     const sortOrder = query._sortOrder || "ASC";
-    const dateFrom = query.dateFrom || "2020-1-1";
-    const dateTo = query.dateTo || "2025-1-1";
-    const program = query.program || [1, 2, 3];
+    const dateFrom = query.dateFrom || new Date().toISOString().split("T")[0];
+    const dateTo = query.dateTo || new Date().toISOString().split("T")[0];
+    const program = query.program || [1];
 
     const report = await this.reservationRepo.query(`
- select count(country.name) as "totalReservation", country.name as id, SUM("personNumber") as total,SUM("veganNumber") as vegan from reservation
+ 
+
+ select count(country.name) as "totalReservation", country.name as id, SUM("personNumber") as total,SUM("veganNumber") as vegan,SUM("vegetarianNumber") as vegetarian from reservation
  inner join country on country.id = reservation."countryId" 
- inner join "reservation_program" on "reservation_program"."reservationId" = reservation.id
- inner join program on program.id = reservation_program."programId"
+ inner join "reservation_description" on "reservation_description"."reservationId" = reservation.id
+ inner join "reservation_description_program" on "reservation_description_program"."id" = "reservation_description"."reservationId"
+ inner join "program" on "program".id = "reservation_description_program"."programId"
  where "reservation"."dateFrom" >= '${dateFrom}' and "reservation"."dateTo" <='${dateTo}'
  and "program"."id" in (${program})
  group by country.name
- order by country.name ${sortOrder}
  offset ${skip}
  limit ${take}
  `);
     const count = await this.reservationRepo.query(`
- select country.name as id from reservation
- inner join country on country.id = reservation."countryId" 
- inner join "reservation_program" on "reservation_program"."reservationId" = reservation.id
- inner join program on program.id = reservation_program."programId"
- where "reservation"."dateFrom" >= '${dateFrom}' and "reservation"."dateTo" <='${dateTo}'
- and "program"."id" in (${program})
- group by country.name
+    select count(country.name) as "totalReservation", country.name as id, SUM("personNumber") as total,SUM("veganNumber") as vegan,SUM("vegetarianNumber") as vegetarian from reservation
+    inner join country on country.id = reservation."countryId" 
+    inner join "reservation_description" on "reservation_description"."reservationId" = reservation.id
+    inner join "reservation_description_program" on "reservation_description_program"."id" = "reservation_description"."reservationId"
+    inner join "program" on "program".id = "reservation_description_program"."programId"
+    where "reservation"."dateFrom" >= '${dateFrom}' and "reservation"."dateTo" <='${dateTo}'
+    and "program"."id" in (${program})
+    group by country.name
  
  `);
     const total = count.length;
     return { data: report, total };
   }
-  async getReportByCash(query) {
+  async getReportByPayment(query) {
     const take = query._perPage || 10;
     const page = query._page || 1;
     const skip = (page - 1) * take;
-    const dateFrom = query.dateFrom || "2020-1-1";
-    const dateTo = query.dateTo || "2024-1-1";
+    const dateFrom = query.dateFrom || new Date().toISOString().split("T")[0];
+    const dateTo = query.dateTo || new Date().toISOString().split("T")[0];
     const payment = query.payment || 1;
 
     const result = await this.reservationRepo
@@ -605,6 +736,114 @@ export class ReservationService {
       total: result[1],
     };
   }
+
+  async getReportByContact(query) {
+    const take = query._perPage || 10;
+    const page = query._page || 1;
+    const skip = (page - 1) * take;
+    const keyword = query._q || "";
+    const order = query._sortOrder || "DESC";
+    const result = await this.reservationRepo.findAndCount({
+      take: take,
+      skip: skip,
+      order: {
+        id: order,
+      },
+      where: {
+        contact: Like(`%${keyword}%`),
+      },
+    });
+
+    return {
+      data: result[0],
+      total: result[1],
+    };
+  }
+  async getDailyReport(query) {
+    const take = query._perPage || 10;
+    const page = query._page || 1;
+    const skip = (page - 1) * take;
+    const order = query._sortOrder || "DESC";
+    const date =
+      new Date(query.date).toISOString().split("T")[0] ||
+      new Date().toISOString().split("T")[0];
+
+    const result = await this.reservationRepo.findAndCount({
+      select: {
+        id: true,
+        name: true,
+        personNumber: true,
+        veganNumber: true,
+        vegetarianNumber: true,
+        accommodationsToReservation: true,
+        descriptions: true,
+      },
+      relations: {
+        accommodationsToReservation: { accommodation: true },
+        descriptions: {
+          foodToDescriptions: { food: true },
+          programsToDescriptions: { program: true },
+        },
+      },
+      take: take,
+      skip: skip,
+      order: {
+        id: order,
+        descriptions: {
+          programsToDescriptions: {
+            id: "ASC",
+          },
+          foodToDescriptions: {
+            id: "ASC",
+          },
+        },
+        accommodationsToReservation: {
+          id: "ASC",
+        },
+      },
+      where: {
+        descriptions: {
+          date: Equal(new Date(date)),
+        },
+      },
+    });
+
+    const reservations = result[0];
+
+    const data = reservations.map((reservation) => {
+      const data = reservation.descriptions.map((element) => {
+        const data = new Object();
+        data["date"] = element.date.toISOString().split("T")[0];
+        data["programTitles"] = element.programsToDescriptions.map((e) => {
+          return e.program.title;
+        });
+
+        data["foodNames"] = element.foodToDescriptions.map((e) => {
+          return e.food.name;
+        });
+
+        return data;
+      });
+
+      const accommodations = reservation.accommodationsToReservation.map(
+        (element) => {
+          return element.accommodation.name;
+        }
+      );
+      reservation["accommodations"] = accommodations;
+      reservation["description"] = data;
+      delete reservation.descriptions;
+      delete reservation.accommodationsToReservation;
+      return reservation;
+    });
+
+    return {
+      data: result[0],
+      total: result[1],
+    };
+  }
+  paginate = (items, page = 1, perPage = 10) =>
+    items.slice(perPage * (page - 1), perPage * page);
 
   @Cron("0 0 12 * * *")
   async cronJob() {

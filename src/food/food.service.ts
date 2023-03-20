@@ -38,6 +38,16 @@ export class FoodService {
       .getMany();
     if (result) return { data: result };
   }
+  async findByIds(ids: number[]): Promise<Food[]> {
+    const food = await this.foodRepo
+      .createQueryBuilder('food')
+      .where('food.id IN (:...ids)', { ids: ids })
+      .getMany();
+    if (food.length) {
+      return food;
+    }
+  }
+
   async getOne(id: number) {
     const result = await this.foodRepo.findOne({
       where: { id: id },

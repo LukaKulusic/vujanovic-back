@@ -28,7 +28,7 @@ let PaymentService = class PaymentService {
         const keyword = query._q || '';
         let result = await this.paymentRepo.findAndCount({
             order: { id: query._sortOrder },
-            where: { type: typeorm_2.Like('%' + keyword + '%') },
+            where: { type: (0, typeorm_2.Like)('%' + keyword + '%') },
             skip: skip,
             take: take,
             select: {
@@ -129,8 +129,8 @@ let PaymentService = class PaymentService {
     }
 };
 PaymentService = __decorate([
-    common_1.Injectable(),
-    __param(0, typeorm_1.InjectRepository(payment_entity_1.Payment)),
+    (0, common_1.Injectable)(),
+    __param(0, (0, typeorm_1.InjectRepository)(payment_entity_1.Payment)),
     __metadata("design:paramtypes", [typeorm_2.Repository])
 ], PaymentService);
 exports.PaymentService = PaymentService;

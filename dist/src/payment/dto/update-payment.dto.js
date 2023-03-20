@@ -15,17 +15,17 @@ const class_validator_1 = require("class-validator");
 class UpdatePaymentDto {
 }
 __decorate([
-    swagger_1.ApiProperty(),
-    class_validator_1.IsNumber(),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
 ], UpdatePaymentDto.prototype, "id", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    class_validator_1.IsString(),
-    class_validator_1.MinLength(3, {
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.MinLength)(3, {
         message: 'Type is too short',
     }),
-    class_validator_1.MaxLength(10, {
+    (0, class_validator_1.MaxLength)(10, {
         message: 'Type is too long',
     }),
     __metadata("design:type", String)

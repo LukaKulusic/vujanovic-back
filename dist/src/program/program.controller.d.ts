@@ -14,7 +14,7 @@ export declare class ProgramController {
             description: string;
             createdDate: Date;
             updatedDate: Date;
-            programsToReservation: import("../reservation-program/entity/reservation-program.entity").ReservationProgram[];
+            programsToDescription: import("../reservation-description-program/entity/reservation-description-program.entity").ReservationDescriptionProgram[];
         }[];
         total: number;
     }>;
@@ -25,7 +25,7 @@ export declare class ProgramController {
             description: string;
             createdDate: Date;
             updatedDate: Date;
-            programsToReservation: import("../reservation-program/entity/reservation-program.entity").ReservationProgram[];
+            programsToDescription: import("../reservation-description-program/entity/reservation-description-program.entity").ReservationDescriptionProgram[];
         };
     }>;
     getMany(body: GetManyDto): Promise<{
@@ -38,7 +38,7 @@ export declare class ProgramController {
             description: string;
             createdDate: Date;
             updatedDate: Date;
-            programsToReservation: import("../reservation-program/entity/reservation-program.entity").ReservationProgram[];
+            programsToDescription: import("../reservation-description-program/entity/reservation-description-program.entity").ReservationDescriptionProgram[];
         };
     }>;
     updateMany(body: UpdateManyProgramDto): Promise<{
@@ -51,7 +51,7 @@ export declare class ProgramController {
             description: string;
             createdDate: Date;
             updatedDate: Date;
-            programsToReservation: import("../reservation-program/entity/reservation-program.entity").ReservationProgram[];
+            programsToDescription: import("../reservation-description-program/entity/reservation-description-program.entity").ReservationDescriptionProgram[];
         };
     }>;
     deleteUser(id: number): Promise<{

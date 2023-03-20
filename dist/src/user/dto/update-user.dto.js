@@ -17,45 +17,45 @@ const role_dto_1 = require("./role.dto");
 class UpdateUserDto {
 }
 __decorate([
-    swagger_1.ApiProperty(),
-    class_validator_1.IsString(),
-    class_validator_1.MinLength(3, {
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.MinLength)(3, {
         message: 'Name is too short',
     }),
-    class_validator_1.MaxLength(20, {
+    (0, class_validator_1.MaxLength)(20, {
         message: 'Name is too long',
     }),
-    class_validator_1.IsOptional(),
+    (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], UpdateUserDto.prototype, "name", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    class_validator_1.IsString(),
-    class_validator_1.IsOptional(),
-    class_validator_1.MinLength(3, {
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.MinLength)(3, {
         message: 'Username is too short',
     }),
-    class_validator_1.MaxLength(20, {
+    (0, class_validator_1.MaxLength)(20, {
         message: 'Username is too long',
     }),
-    class_validator_1.IsOptional(),
+    (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], UpdateUserDto.prototype, "username", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    class_validator_1.IsEmail(),
-    class_validator_1.IsOptional(),
-    class_validator_1.MinLength(5, {
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsEmail)(),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.MinLength)(5, {
         message: 'Email is too short',
     }),
-    class_validator_1.IsOptional(),
+    (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], UpdateUserDto.prototype, "email", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    class_validator_1.IsOptional(),
-    class_validator_1.ValidateNested(),
-    class_transformer_1.Type(() => role_dto_1.RoleDto),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.ValidateNested)(),
+    (0, class_transformer_1.Type)(() => role_dto_1.RoleDto),
     __metadata("design:type", role_dto_1.RoleDto)
 ], UpdateUserDto.prototype, "role", void 0);
 exports.UpdateUserDto = UpdateUserDto;

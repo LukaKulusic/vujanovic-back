@@ -6,11 +6,12 @@ import { UserRoles } from "src/user/entity/enum/roles.enum";
 import { ReservationService } from "./reservation.service";
 import { GetManyDto } from "src/user/dto/get-many-user.dto";
 import { UpdateManyReservationDto } from "./dto/update-many-reservation.dto";
+import { ReservationReportMealsDto } from "./dto/report-meals.dto";
 export declare class ReservationController {
     private readonly reservationService;
     constructor(reservationService: ReservationService);
     getAll(req: Request): Promise<{
-        data: import("./entity/reservation.entity").Reservation[];
+        data: any;
         total: number;
     }>;
     getById(id: number): Promise<{
@@ -67,7 +68,19 @@ export declare class ReservationController {
         data: any;
         total: any;
     }>;
+    getReportByMealCount(body: ReservationReportMealsDto): Promise<{
+        data: any[];
+        total: number;
+    }>;
     getReportByCash(query: any): Promise<{
+        data: import("./entity/reservation.entity").Reservation[];
+        total: number;
+    }>;
+    getReportByDate(query: any): Promise<{
+        data: import("./entity/reservation.entity").Reservation[];
+        total: number;
+    }>;
+    getDailyReport(query: any): Promise<{
         data: import("./entity/reservation.entity").Reservation[];
         total: number;
     }>;

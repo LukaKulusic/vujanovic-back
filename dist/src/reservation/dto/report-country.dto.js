@@ -15,18 +15,18 @@ const class_validator_1 = require("class-validator");
 class ReportByCountryDto {
 }
 __decorate([
-    swagger_1.ApiProperty(),
-    class_validator_1.IsDateString(),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsDateString)(),
     __metadata("design:type", Date)
 ], ReportByCountryDto.prototype, "dateFrom", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    class_validator_1.IsDateString(),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsDateString)(),
     __metadata("design:type", Date)
 ], ReportByCountryDto.prototype, "dateTo", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    class_validator_1.IsNumber(),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
 ], ReportByCountryDto.prototype, "program", void 0);
 exports.ReportByCountryDto = ReportByCountryDto;

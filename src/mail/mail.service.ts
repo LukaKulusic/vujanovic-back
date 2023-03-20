@@ -10,7 +10,7 @@ export class MailService {
       await this.mailerService.sendMail({
         to: email,
         from: process.env.MAIL_FROM,
-        subject: "New reservation",
+        subject: "Rezervacija",
         text: text,
       });
     } catch (error) {

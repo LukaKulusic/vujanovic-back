@@ -35,26 +35,26 @@ let AuthController = class AuthController {
     }
 };
 __decorate([
-    public_decorator_1.Public(),
-    common_1.UseGuards(local_guard_1.LocalAuthGuard),
-    common_1.Post('/login'),
-    __param(0, common_1.Body()),
-    __param(1, get_current_user_decorator_1.GetCurrentUser()),
+    (0, public_decorator_1.Public)(),
+    (0, common_1.UseGuards)(local_guard_1.LocalAuthGuard),
+    (0, common_1.Post)('/login'),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, get_current_user_decorator_1.GetCurrentUser)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [login_dto_1.LoginDto, Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "login", null);
 __decorate([
-    common_1.Get('/me'),
-    __param(0, get_current_user_id_decorator_1.GetCurrentUserId()),
+    (0, common_1.Get)('/me'),
+    __param(0, (0, get_current_user_id_decorator_1.GetCurrentUserId)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "getUser", null);
 AuthController = __decorate([
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiTags('Auth'),
-    common_1.Controller('auth'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiTags)('Auth'),
+    (0, common_1.Controller)('auth'),
     __metadata("design:paramtypes", [auth_service_1.AuthService,
         user_service_1.UserService])
 ], AuthController);

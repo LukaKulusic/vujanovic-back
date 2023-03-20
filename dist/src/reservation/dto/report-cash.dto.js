@@ -15,18 +15,18 @@ const class_validator_1 = require("class-validator");
 class ReportByCashDto {
 }
 __decorate([
-    swagger_1.ApiProperty(),
-    class_validator_1.IsDateString(),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsDateString)(),
     __metadata("design:type", Date)
 ], ReportByCashDto.prototype, "dateFrom", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    class_validator_1.IsDateString(),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsDateString)(),
     __metadata("design:type", Date)
 ], ReportByCashDto.prototype, "dateTo", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    class_validator_1.IsNumber(),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
 ], ReportByCashDto.prototype, "payment", void 0);
 exports.ReportByCashDto = ReportByCashDto;

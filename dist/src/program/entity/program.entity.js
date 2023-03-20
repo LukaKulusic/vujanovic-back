@@ -10,44 +10,44 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Program = void 0;
-const reservation_program_entity_1 = require("../../reservation-program/entity/reservation-program.entity");
+const reservation_description_program_entity_1 = require("../../reservation-description-program/entity/reservation-description-program.entity");
 const typeorm_1 = require("typeorm");
 const program_enum_1 = require("./enum/program.enum");
 let Program = class Program extends typeorm_1.BaseEntity {
 };
 __decorate([
-    typeorm_1.PrimaryGeneratedColumn('increment'),
+    (0, typeorm_1.PrimaryGeneratedColumn)('increment'),
     __metadata("design:type", Number)
 ], Program.prototype, "id", void 0);
 __decorate([
-    typeorm_1.Column(),
+    (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], Program.prototype, "title", void 0);
 __decorate([
-    typeorm_1.Column('text'),
+    (0, typeorm_1.Column)('text'),
     __metadata("design:type", String)
 ], Program.prototype, "description", void 0);
 __decorate([
-    typeorm_1.Column({
+    (0, typeorm_1.Column)({
         type: 'enum',
         enum: program_enum_1.ProgramType,
     }),
     __metadata("design:type", String)
 ], Program.prototype, "type", void 0);
 __decorate([
-    typeorm_1.CreateDateColumn({ type: 'timestamp', select: false }),
+    (0, typeorm_1.CreateDateColumn)({ type: 'timestamp', select: false }),
     __metadata("design:type", Date)
 ], Program.prototype, "createdDate", void 0);
 __decorate([
-    typeorm_1.UpdateDateColumn({ type: 'timestamp', select: false }),
+    (0, typeorm_1.UpdateDateColumn)({ type: 'timestamp', select: false }),
     __metadata("design:type", Date)
 ], Program.prototype, "updatedDate", void 0);
 __decorate([
-    typeorm_1.OneToMany(() => reservation_program_entity_1.ReservationProgram, (programToReservation) => programToReservation.program),
+    (0, typeorm_1.OneToMany)(() => reservation_description_program_entity_1.ReservationDescriptionProgram, (programToDescription) => programToDescription.program),
     __metadata("design:type", Array)
-], Program.prototype, "programsToReservation", void 0);
+], Program.prototype, "programsToDescription", void 0);
 Program = __decorate([
-    typeorm_1.Entity('program')
+    (0, typeorm_1.Entity)('program')
 ], Program);
 exports.Program = Program;
 //# sourceMappingURL=program.entity.js.map

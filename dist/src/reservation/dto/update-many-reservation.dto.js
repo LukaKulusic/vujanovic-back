@@ -15,7 +15,7 @@ const update_reservations_dto_1 = require("./update-reservations.dto");
 class UpdateManyReservationDto {
 }
 __decorate([
-    swagger_1.ApiProperty({ isArray: true, type: update_reservations_dto_1.UpdateReservationsDto }),
+    (0, swagger_1.ApiProperty)({ isArray: true, type: update_reservations_dto_1.UpdateReservationsDto }),
     __metadata("design:type", Array)
 ], UpdateManyReservationDto.prototype, "updateData", void 0);
 exports.UpdateManyReservationDto = UpdateManyReservationDto;

@@ -15,12 +15,12 @@ const class_validator_1 = require("class-validator");
 class FoodDto {
 }
 __decorate([
-    swagger_1.ApiProperty(),
-    class_validator_1.IsString(),
-    class_validator_1.MinLength(3, {
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.MinLength)(3, {
         message: 'Name is too short',
     }),
-    class_validator_1.MaxLength(20, {
+    (0, class_validator_1.MaxLength)(20, {
         message: 'Name is too long',
     }),
     __metadata("design:type", String)

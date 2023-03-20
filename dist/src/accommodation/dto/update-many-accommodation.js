@@ -15,7 +15,7 @@ const update_accommodation_dto_1 = require("./update-accommodation.dto");
 class UpdateManyAccommodationDto {
 }
 __decorate([
-    swagger_1.ApiProperty({ isArray: true, type: update_accommodation_dto_1.UpdateAccommodationDto }),
+    (0, swagger_1.ApiProperty)({ isArray: true, type: update_accommodation_dto_1.UpdateAccommodationDto }),
     __metadata("design:type", Array)
 ], UpdateManyAccommodationDto.prototype, "updateData", void 0);
 exports.UpdateManyAccommodationDto = UpdateManyAccommodationDto;

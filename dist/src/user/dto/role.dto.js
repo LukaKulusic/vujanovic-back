@@ -15,10 +15,10 @@ const class_validator_1 = require("class-validator");
 class RoleDto {
 }
 __decorate([
-    swagger_1.ApiProperty(),
-    class_validator_1.IsNumber(),
-    class_validator_1.Min(1),
-    class_validator_1.Max(5),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsNumber)(),
+    (0, class_validator_1.Min)(1),
+    (0, class_validator_1.Max)(5),
     __metadata("design:type", Number)
 ], RoleDto.prototype, "id", void 0);
 exports.RoleDto = RoleDto;

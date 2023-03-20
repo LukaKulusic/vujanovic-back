@@ -1,5 +1,5 @@
-import { Exclude } from 'class-transformer';
-import { Reservation } from 'src/reservation/entity/reservation.entity';
+import { ReservationDescriptionFood } from 'src/reservation-description-food/entity/reservation-description-food.entity';
+
 import {
   Entity,
   Column,
@@ -24,8 +24,9 @@ export class Food extends BaseEntity {
   @UpdateDateColumn({ type: 'timestamp', select: false })
   updatedDate: Date;
 
-  @OneToMany(() => Reservation, (reservation) => reservation.food, {
-    onDelete: 'SET NULL',
-  })
-  reservations: Reservation[];
+  @OneToMany(
+    () => ReservationDescriptionFood,
+    (foodToDescription) => foodToDescription.food,
+  )
+  foodToDescriptions: ReservationDescriptionFood[];
 }

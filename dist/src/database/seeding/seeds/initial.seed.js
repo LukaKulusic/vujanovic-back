@@ -17,16 +17,16 @@ class CreateSeed {
             .into(accommodation_entity_1.Accommodation)
             .values([
             {
-                name: 's1',
+                name: "s1",
             },
             {
-                name: 's2',
+                name: "s2",
             },
             {
-                name: 's3',
+                name: "s3",
             },
             {
-                name: 's4',
+                name: "s4",
             },
         ])
             .execute();
@@ -36,13 +36,13 @@ class CreateSeed {
             .into(payment_entity_1.Payment)
             .values([
             {
-                type: 'Kes',
+                type: "Kes",
             },
             {
-                type: 'Faktura',
+                type: "Faktura",
             },
             {
-                type: 'Avans',
+                type: "Avans",
             },
         ])
             .execute();
@@ -52,23 +52,23 @@ class CreateSeed {
             .into(program_entity_1.Program)
             .values([
             {
-                title: 'p1',
-                description: '...',
+                title: "p1",
+                description: "...",
                 type: program_enum_1.ProgramType.BEFORE_NOON,
             },
             {
-                title: 'p2',
-                description: '...',
+                title: "p2",
+                description: "...",
                 type: program_enum_1.ProgramType.BEFORE_NOON,
             },
             {
-                title: 'p3',
-                description: '...',
+                title: "p3",
+                description: "...",
                 type: program_enum_1.ProgramType.AFTERNOON,
             },
             {
-                title: 'p4',
-                description: '...',
+                title: "p4",
+                description: "...",
                 type: program_enum_1.ProgramType.AFTERNOON,
             },
         ])
@@ -79,26 +79,17 @@ class CreateSeed {
             .into(food_entity_1.Food)
             .values([
             {
-                name: 'dorucak',
+                name: "dorucak",
             },
             {
-                name: 'rucak',
+                name: "rucak",
             },
             {
-                name: 'vecera',
-            },
-            {
-                name: 'dorucak-rucak',
-            },
-            {
-                name: 'dorucak-vecera',
-            },
-            {
-                name: 'rucak-vecera',
+                name: "vecera",
             },
         ])
             .execute();
-        const counties = country_list_1.getData();
+        const counties = (0, country_list_1.getData)();
         for (const country of counties) {
             await connection
                 .createQueryBuilder()

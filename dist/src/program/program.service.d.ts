@@ -13,7 +13,7 @@ export declare class ProgramService {
             description: string;
             createdDate: Date;
             updatedDate: Date;
-            programsToReservation: import("../reservation-program/entity/reservation-program.entity").ReservationProgram[];
+            programsToDescription: import("../reservation-description-program/entity/reservation-description-program.entity").ReservationDescriptionProgram[];
         }[];
         total: number;
     }>;
@@ -27,7 +27,7 @@ export declare class ProgramService {
             description: string;
             createdDate: Date;
             updatedDate: Date;
-            programsToReservation: import("../reservation-program/entity/reservation-program.entity").ReservationProgram[];
+            programsToDescription: import("../reservation-description-program/entity/reservation-description-program.entity").ReservationDescriptionProgram[];
         };
     }>;
     findAll(): Promise<Program[]>;
@@ -41,7 +41,7 @@ export declare class ProgramService {
             description: string;
             createdDate: Date;
             updatedDate: Date;
-            programsToReservation: import("../reservation-program/entity/reservation-program.entity").ReservationProgram[];
+            programsToDescription: import("../reservation-description-program/entity/reservation-description-program.entity").ReservationDescriptionProgram[];
         };
     }>;
     update(id: number, body: UpdateProgramDto): Promise<{
@@ -51,7 +51,7 @@ export declare class ProgramService {
             description: string;
             createdDate: Date;
             updatedDate: Date;
-            programsToReservation: import("../reservation-program/entity/reservation-program.entity").ReservationProgram[];
+            programsToDescription: import("../reservation-description-program/entity/reservation-description-program.entity").ReservationDescriptionProgram[];
         };
     }>;
     updateMany(body: UpdateProgramsDto[]): Promise<{

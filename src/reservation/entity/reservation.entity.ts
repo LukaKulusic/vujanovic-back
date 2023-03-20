@@ -1,8 +1,8 @@
-import { Accommodation } from 'src/accommodation/entity/accommodation.entity';
-import { Country } from 'src/country/entity/country.entity';
-import { Food } from 'src/food/entity/food.entity';
-import { Payment } from 'src/payment/entity/payment.entity';
-import { ReservationProgram } from 'src/reservation-program/entity/reservation-program.entity';
+import { Country } from "src/country/entity/country.entity";
+import { Food } from "src/food/entity/food.entity";
+import { Payment } from "src/payment/entity/payment.entity";
+import { ReservationAccommodation } from "src/reservation-accommodation/entity/reservation-accommodation.entity";
+import { ReservationDescription } from "src/reservation-description/entity/reservation-description.entity";
 import {
   Entity,
   Column,
@@ -12,20 +12,24 @@ import {
   UpdateDateColumn,
   OneToMany,
   ManyToOne,
-} from 'typeorm';
+} from "typeorm";
 
-@Entity('reservation')
+@Entity("reservation")
 export class Reservation extends BaseEntity {
-  @PrimaryGeneratedColumn('increment')
+  @PrimaryGeneratedColumn("increment")
   id: number;
 
   @Column()
   name: string;
 
-  @ManyToOne(() => Country, (country) => country.reservations, {
-    nullable: true,
-  })
-  country: Country;
+  @Column({ nullable: true })
+  contact: string;
+
+  @Column({ type: "timestamp" })
+  dateFrom: Date;
+
+  @Column({ type: "timestamp" })
+  dateTo: Date;
 
   @Column()
   personNumber: number;
@@ -33,38 +37,57 @@ export class Reservation extends BaseEntity {
   @Column({ default: 0 })
   veganNumber: number;
 
-  @Column({ type: 'timestamp' })
-  dateFrom: Date;
+  @Column({ default: 0 })
+  vegetarianNumber: number;
 
-  @Column({ type: 'timestamp' })
-  dateTo: Date;
+  @Column("text", { nullable: true })
+  paymentDetails: string;
 
-  @CreateDateColumn({ type: 'timestamp', select: false })
+  @Column("text", { nullable: true })
+  desc: string;
+
+  @CreateDateColumn({ type: "timestamp", select: false })
   createdDate: Date;
 
-  @UpdateDateColumn({ type: 'timestamp', select: false })
+  @UpdateDateColumn({ type: "timestamp", select: false })
   updatedDate: Date;
 
-  @OneToMany(
-    () => ReservationProgram,
-    (programToReservation) => programToReservation.reservation,
-    { cascade: true, eager: true },
-  )
-  programsToReservation: ReservationProgram[];
+  // @OneToMany(
+  //   () => ReservationProgram,
+  //   (programToReservation) => programToReservation.reservation,
+  //   { cascade: true, eager: true },
+  // )
+  // programsToReservation: ReservationProgram[];
 
-  @ManyToOne(() => Food, (food) => food.reservations, {
+  // @ManyToOne(() => Food, (food) => food.reservations, {
+  //   nullable: true,
+  // })
+  // food: Food;
+
+  // ONE TO MANY
+
+  @OneToMany(
+    () => ReservationAccommodation,
+    (accommodationToReservation) => accommodationToReservation.reservation,
+    { cascade: true, eager: true }
+  )
+  accommodationsToReservation: ReservationAccommodation[];
+
+  @OneToMany(
+    () => ReservationDescription,
+    (description) => description.reservation,
+    {
+      onDelete: "SET NULL",
+    }
+  )
+  descriptions: ReservationDescription[];
+
+  //MANY TO ONE
+
+  @ManyToOne(() => Country, (country) => country.reservations, {
     nullable: true,
   })
-  food: Food;
-
-  @ManyToOne(
-    () => Accommodation,
-    (accommodation) => accommodation.reservations,
-    {
-      nullable: true,
-    },
-  )
-  accommodation: Accommodation;
+  country: Country;
 
   @ManyToOne(() => Payment, (payment) => payment.reservations, {
     nullable: true,

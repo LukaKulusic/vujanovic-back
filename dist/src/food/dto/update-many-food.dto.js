@@ -15,7 +15,7 @@ const update_food_dto_1 = require("./update-food.dto");
 class UpdateManyFoodDto {
 }
 __decorate([
-    swagger_1.ApiProperty({ isArray: true, type: update_food_dto_1.UpdateFoodDto }),
+    (0, swagger_1.ApiProperty)({ isArray: true, type: update_food_dto_1.UpdateFoodDto }),
     __metadata("design:type", Array)
 ], UpdateManyFoodDto.prototype, "updateData", void 0);
 exports.UpdateManyFoodDto = UpdateManyFoodDto;

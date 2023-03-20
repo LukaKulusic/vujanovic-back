@@ -15,25 +15,25 @@ const typeorm_1 = require("typeorm");
 let Country = class Country extends typeorm_1.BaseEntity {
 };
 __decorate([
-    typeorm_1.PrimaryGeneratedColumn('increment'),
+    (0, typeorm_1.PrimaryGeneratedColumn)('increment'),
     __metadata("design:type", Number)
 ], Country.prototype, "id", void 0);
 __decorate([
-    typeorm_1.Column(),
+    (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], Country.prototype, "name", void 0);
 __decorate([
-    typeorm_1.Column(),
+    (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], Country.prototype, "code", void 0);
 __decorate([
-    typeorm_1.OneToMany(() => reservation_entity_1.Reservation, (reservation) => reservation.country, {
+    (0, typeorm_1.OneToMany)(() => reservation_entity_1.Reservation, (reservation) => reservation.country, {
         onDelete: 'SET NULL',
     }),
     __metadata("design:type", Array)
 ], Country.prototype, "reservations", void 0);
 Country = __decorate([
-    typeorm_1.Entity('country')
+    (0, typeorm_1.Entity)('country')
 ], Country);
 exports.Country = Country;
 //# sourceMappingURL=country.entity.js.map

@@ -63,13 +63,13 @@ let AuthService = class AuthService {
     }
 };
 __decorate([
-    event_emitter_1.OnEvent('user.logged-in'),
+    (0, event_emitter_1.OnEvent)('user.logged-in'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [user_loggedin_event_1.UserLoggedInEvent]),
     __metadata("design:returntype", void 0)
 ], AuthService.prototype, "loggedInUser", null);
 AuthService = __decorate([
-    common_1.Injectable({ scope: common_1.Scope.REQUEST }),
+    (0, common_1.Injectable)({ scope: common_1.Scope.REQUEST }),
     __metadata("design:paramtypes", [user_service_1.UserService,
         jwt_1.JwtService,
         event_emitter_1.EventEmitter2])

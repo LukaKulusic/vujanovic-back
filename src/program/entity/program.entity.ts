@@ -1,4 +1,4 @@
-import { ReservationProgram } from 'src/reservation-program/entity/reservation-program.entity';
+import { ReservationDescriptionProgram } from 'src/reservation-description-program/entity/reservation-description-program.entity';
 import {
   Entity,
   Column,
@@ -34,8 +34,8 @@ export class Program extends BaseEntity {
   updatedDate: Date;
 
   @OneToMany(
-    () => ReservationProgram,
-    (programToReservation) => programToReservation.program,
+    () => ReservationDescriptionProgram,
+    (programToDescription) => programToDescription.program,
   )
-  programsToReservation: ReservationProgram[];
+  programsToDescription: ReservationDescriptionProgram[];
 }

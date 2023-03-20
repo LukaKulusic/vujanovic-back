@@ -1,5 +1,5 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
+import { ApiProperty } from "@nestjs/swagger";
+import { Type } from "class-transformer";
 import {
   IsDate,
   IsDateString,
@@ -9,18 +9,19 @@ import {
   MaxLength,
   MinLength,
   ValidateNested,
-} from 'class-validator';
-import { Dto } from './dto';
+} from "class-validator";
+import { ReservationDescriptionDto } from "./description.dto";
+import { Dto, UpdateDto } from "./dto";
 
 export class UpdateReservationDto {
   @ApiProperty()
   @IsOptional()
   @IsString()
   @MinLength(3, {
-    message: 'Name is too short',
+    message: "Name is too short",
   })
   @MaxLength(20, {
-    message: 'Name is too long',
+    message: "Name is too long",
   })
   name: string;
 
@@ -34,6 +35,11 @@ export class UpdateReservationDto {
   @IsNumber()
   veganNumber: number;
 
+  @IsOptional()
+  @ApiProperty()
+  @IsNumber()
+  vegetarianNumber: number;
+
   @ApiProperty()
   @IsDateString()
   @IsOptional()
@@ -44,31 +50,51 @@ export class UpdateReservationDto {
   @IsOptional()
   dateTo: Date;
 
-  @ApiProperty({ type: 'integer', isArray: true })
+  @ApiProperty()
   @IsOptional()
-  programs: number[];
+  @IsString()
+  contact: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  paymentDetails: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  desc: string;
+
+  // @ApiProperty({ type: 'integer', isArray: true })
+  // @IsOptional()
+  // programs: number[];
 
   @ApiProperty()
   @IsOptional()
   @ValidateNested()
-  @Type(() => Dto)
-  country: Dto;
+  @Type(() => UpdateDto)
+  country: UpdateDto;
+
+  @IsOptional()
+  @ApiProperty({ type: "integer", isArray: true })
+  accommodations: number[];
+
+  // @ApiProperty()
+  // @IsOptional()
+  // @ValidateNested()
+  // @Type(() => Dto)
+  // food: Dto;
 
   @ApiProperty()
   @IsOptional()
   @ValidateNested()
-  @Type(() => Dto)
-  accommodation: Dto;
+  @Type(() => UpdateDto)
+  payment: UpdateDto;
 
-  @ApiProperty()
   @IsOptional()
-  @ValidateNested()
-  @Type(() => Dto)
-  food: Dto;
-
-  @ApiProperty()
-  @IsOptional()
-  @ValidateNested()
-  @Type(() => Dto)
-  payment: Dto;
+  @ApiProperty({
+    isArray: true,
+    type: ReservationDescriptionDto,
+  })
+  description: ReservationDescriptionDto[];
 }

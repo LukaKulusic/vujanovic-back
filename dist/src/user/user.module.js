@@ -16,7 +16,7 @@ const user_entity_1 = require("./entity/user.entity");
 let UserModule = class UserModule {
 };
 UserModule = __decorate([
-    common_1.Module({
+    (0, common_1.Module)({
         imports: [typeorm_1.TypeOrmModule.forFeature([user_entity_1.User]), jwt_1.JwtModule],
         providers: [user_service_1.UserService],
         controllers: [user_controller_1.UserController],

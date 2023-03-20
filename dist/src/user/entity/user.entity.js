@@ -31,30 +31,30 @@ let User = class User extends typeorm_1.BaseEntity {
     }
 };
 __decorate([
-    typeorm_1.PrimaryGeneratedColumn('increment'),
+    (0, typeorm_1.PrimaryGeneratedColumn)('increment'),
     __metadata("design:type", Number)
 ], User.prototype, "id", void 0);
 __decorate([
-    typeorm_1.Column(),
-    class_validator_1.Length(3, 20),
+    (0, typeorm_1.Column)(),
+    (0, class_validator_1.Length)(3, 20),
     __metadata("design:type", String)
 ], User.prototype, "name", void 0);
 __decorate([
-    typeorm_1.Column({ unique: true }),
-    class_validator_1.Length(4, 20),
+    (0, typeorm_1.Column)({ unique: true }),
+    (0, class_validator_1.Length)(4, 20),
     __metadata("design:type", String)
 ], User.prototype, "username", void 0);
 __decorate([
-    typeorm_1.Column({ select: false }),
-    class_validator_1.Length(5, 20),
+    (0, typeorm_1.Column)({ select: false }),
+    (0, class_validator_1.Length)(5, 20),
     __metadata("design:type", String)
 ], User.prototype, "password", void 0);
 __decorate([
-    typeorm_1.Column(),
+    (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], User.prototype, "email", void 0);
 __decorate([
-    typeorm_1.Column({
+    (0, typeorm_1.Column)({
         type: 'enum',
         enum: roles_enum_1.UserRoles,
         default: roles_enum_1.UserRoles.VIEWER,
@@ -62,22 +62,22 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "role", void 0);
 __decorate([
-    typeorm_1.CreateDateColumn({ type: 'timestamp', select: false }),
+    (0, typeorm_1.CreateDateColumn)({ type: 'timestamp', select: false }),
     __metadata("design:type", Date)
 ], User.prototype, "createdDate", void 0);
 __decorate([
-    typeorm_1.UpdateDateColumn({ type: 'timestamp', select: false }),
+    (0, typeorm_1.UpdateDateColumn)({ type: 'timestamp', select: false }),
     __metadata("design:type", Date)
 ], User.prototype, "updatedDate", void 0);
 __decorate([
-    typeorm_1.BeforeInsert(),
-    typeorm_1.BeforeUpdate(),
+    (0, typeorm_1.BeforeInsert)(),
+    (0, typeorm_1.BeforeUpdate)(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], User.prototype, "hashPassword", null);
 User = __decorate([
-    typeorm_1.Entity('user')
+    (0, typeorm_1.Entity)('user')
 ], User);
 exports.User = User;
 //# sourceMappingURL=user.entity.js.map

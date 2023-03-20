@@ -15,29 +15,29 @@ const typeorm_1 = require("typeorm");
 let Payment = class Payment extends typeorm_1.BaseEntity {
 };
 __decorate([
-    typeorm_1.PrimaryGeneratedColumn('increment'),
+    (0, typeorm_1.PrimaryGeneratedColumn)('increment'),
     __metadata("design:type", Number)
 ], Payment.prototype, "id", void 0);
 __decorate([
-    typeorm_1.Column(),
+    (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], Payment.prototype, "type", void 0);
 __decorate([
-    typeorm_1.CreateDateColumn({ type: 'timestamp', select: false }),
+    (0, typeorm_1.CreateDateColumn)({ type: 'timestamp', select: false }),
     __metadata("design:type", Date)
 ], Payment.prototype, "createdDate", void 0);
 __decorate([
-    typeorm_1.UpdateDateColumn({ type: 'timestamp', select: false }),
+    (0, typeorm_1.UpdateDateColumn)({ type: 'timestamp', select: false }),
     __metadata("design:type", Date)
 ], Payment.prototype, "updatedDate", void 0);
 __decorate([
-    typeorm_1.OneToMany(() => reservation_entity_1.Reservation, (reservation) => reservation.payment, {
+    (0, typeorm_1.OneToMany)(() => reservation_entity_1.Reservation, (reservation) => reservation.payment, {
         onDelete: 'SET NULL',
     }),
     __metadata("design:type", Array)
 ], Payment.prototype, "reservations", void 0);
 Payment = __decorate([
-    typeorm_1.Entity('payment')
+    (0, typeorm_1.Entity)('payment')
 ], Payment);
 exports.Payment = Payment;
 //# sourceMappingURL=payment.entity.js.map

@@ -23,7 +23,7 @@ let MailService = MailService_1 = class MailService {
             await this.mailerService.sendMail({
                 to: email,
                 from: process.env.MAIL_FROM,
-                subject: "New reservation",
+                subject: "Rezervacija",
                 text: text,
             });
         }
@@ -34,7 +34,7 @@ let MailService = MailService_1 = class MailService {
     }
 };
 MailService = MailService_1 = __decorate([
-    common_1.Injectable(),
+    (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [mailer_1.MailerService])
 ], MailService);
 exports.MailService = MailService;

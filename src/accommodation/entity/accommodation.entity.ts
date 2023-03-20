@@ -1,4 +1,4 @@
-import { Reservation } from 'src/reservation/entity/reservation.entity';
+import { ReservationAccommodation } from 'src/reservation-accommodation/entity/reservation-accommodation.entity';
 import {
   Entity,
   Column,
@@ -23,8 +23,10 @@ export class Accommodation extends BaseEntity {
   @UpdateDateColumn({ type: 'timestamp', select: false })
   updatedDate: Date;
 
-  @OneToMany(() => Reservation, (reservation) => reservation.accommodation, {
-    onDelete: 'SET NULL',
-  })
-  reservations: Reservation[];
+  @OneToMany(
+    () => ReservationAccommodation,
+    (accommodationToReservation) => accommodationToReservation.reservation,
+    { cascade: true },
+  )
+  accommodationsToReservation: ReservationAccommodation[];
 }

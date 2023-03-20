@@ -1,13 +1,13 @@
-import { Factory, Seeder } from 'typeorm-seeding';
-import { Connection } from 'typeorm';
-import { getData } from 'country-list';
-import { User } from 'src/user/entity/user.entity';
-import { Country } from 'src/country/entity/country.entity';
-import { Food } from 'src/food/entity/food.entity';
-import { Accommodation } from 'src/accommodation/entity/accommodation.entity';
-import { Program } from 'src/program/entity/program.entity';
-import { Payment } from 'src/payment/entity/payment.entity';
-import { ProgramType } from 'src/program/entity/enum/program.enum';
+import { Factory, Seeder } from "typeorm-seeding";
+import { Connection } from "typeorm";
+import { getData } from "country-list";
+import { User } from "src/user/entity/user.entity";
+import { Country } from "src/country/entity/country.entity";
+import { Food } from "src/food/entity/food.entity";
+import { Accommodation } from "src/accommodation/entity/accommodation.entity";
+import { Program } from "src/program/entity/program.entity";
+import { Payment } from "src/payment/entity/payment.entity";
+import { ProgramType } from "src/program/entity/enum/program.enum";
 
 export default class CreateSeed implements Seeder {
   public async run(factory: Factory, connection: Connection): Promise<any> {
@@ -19,16 +19,16 @@ export default class CreateSeed implements Seeder {
       .into(Accommodation)
       .values([
         {
-          name: 's1',
+          name: "s1",
         },
         {
-          name: 's2',
+          name: "s2",
         },
         {
-          name: 's3',
+          name: "s3",
         },
         {
-          name: 's4',
+          name: "s4",
         },
       ])
       .execute();
@@ -39,13 +39,13 @@ export default class CreateSeed implements Seeder {
       .into(Payment)
       .values([
         {
-          type: 'Kes',
+          type: "Kes",
         },
         {
-          type: 'Faktura',
+          type: "Faktura",
         },
         {
-          type: 'Avans',
+          type: "Avans",
         },
       ])
       .execute();
@@ -56,23 +56,23 @@ export default class CreateSeed implements Seeder {
       .into(Program)
       .values([
         {
-          title: 'p1',
-          description: '...',
+          title: "p1",
+          description: "...",
           type: ProgramType.BEFORE_NOON,
         },
         {
-          title: 'p2',
-          description: '...',
+          title: "p2",
+          description: "...",
           type: ProgramType.BEFORE_NOON,
         },
         {
-          title: 'p3',
-          description: '...',
+          title: "p3",
+          description: "...",
           type: ProgramType.AFTERNOON,
         },
         {
-          title: 'p4',
-          description: '...',
+          title: "p4",
+          description: "...",
           type: ProgramType.AFTERNOON,
         },
       ])
@@ -84,22 +84,13 @@ export default class CreateSeed implements Seeder {
       .into(Food)
       .values([
         {
-          name: 'dorucak',
+          name: "dorucak",
         },
         {
-          name: 'rucak',
+          name: "rucak",
         },
         {
-          name: 'vecera',
-        },
-        {
-          name: 'dorucak-rucak',
-        },
-        {
-          name: 'dorucak-vecera',
-        },
-        {
-          name: 'rucak-vecera',
+          name: "vecera",
         },
       ])
       .execute();

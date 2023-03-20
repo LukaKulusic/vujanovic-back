@@ -84,71 +84,71 @@ let AccommodationController = class AccommodationController {
     }
 };
 __decorate([
-    common_1.Get(),
-    __param(0, common_2.Req()),
+    (0, common_1.Get)(),
+    __param(0, (0, common_2.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], AccommodationController.prototype, "getAll", null);
 __decorate([
-    common_1.Get('/:id'),
-    __param(0, common_1.Param('id')),
+    (0, common_1.Get)('/:id'),
+    __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)
 ], AccommodationController.prototype, "getById", null);
 __decorate([
-    common_1.Post('getMany'),
-    __param(0, common_1.Body()),
+    (0, common_1.Post)('getMany'),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [get_many_user_dto_1.GetManyDto]),
     __metadata("design:returntype", void 0)
 ], AccommodationController.prototype, "getMany", null);
 __decorate([
-    common_1.Patch('/:id'),
-    roles_decorator_1.Roles(roles_enum_1.UserRoles.ADMIN),
-    __param(0, common_1.Param('id')),
-    __param(1, common_1.Body()),
+    (0, common_1.Patch)('/:id'),
+    (0, roles_decorator_1.Roles)(roles_enum_1.UserRoles.ADMIN),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, accommodation_dto_1.AccommodationDto]),
     __metadata("design:returntype", Promise)
 ], AccommodationController.prototype, "update", null);
 __decorate([
-    common_1.Post('updateMany'),
-    roles_decorator_1.Roles(roles_enum_1.UserRoles.ADMIN),
-    __param(0, common_1.Body()),
+    (0, common_1.Post)('updateMany'),
+    (0, roles_decorator_1.Roles)(roles_enum_1.UserRoles.ADMIN),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [update_many_accommodation_1.UpdateManyAccommodationDto]),
     __metadata("design:returntype", void 0)
 ], AccommodationController.prototype, "updateMany", null);
 __decorate([
-    common_1.Post(),
-    roles_decorator_1.Roles(roles_enum_1.UserRoles.ADMIN),
-    __param(0, common_1.Body()),
+    (0, common_1.Post)(),
+    (0, roles_decorator_1.Roles)(roles_enum_1.UserRoles.ADMIN),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [accommodation_dto_1.AccommodationDto]),
     __metadata("design:returntype", Promise)
 ], AccommodationController.prototype, "create", null);
 __decorate([
-    common_1.Delete('/:id'),
-    roles_decorator_1.Roles(roles_enum_1.UserRoles.ADMIN),
-    __param(0, common_1.Param('id')),
+    (0, common_1.Delete)('/:id'),
+    (0, roles_decorator_1.Roles)(roles_enum_1.UserRoles.ADMIN),
+    __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)
 ], AccommodationController.prototype, "deleteUser", null);
 __decorate([
-    common_1.Post('deleteMany'),
-    roles_decorator_1.Roles(roles_enum_1.UserRoles.ADMIN),
-    __param(0, common_1.Body()),
+    (0, common_1.Post)('deleteMany'),
+    (0, roles_decorator_1.Roles)(roles_enum_1.UserRoles.ADMIN),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [get_many_user_dto_1.GetManyDto]),
     __metadata("design:returntype", Promise)
 ], AccommodationController.prototype, "deleteMany", null);
 AccommodationController = __decorate([
-    swagger_1.ApiTags('Accommodation'),
-    swagger_1.ApiBearerAuth(),
-    common_1.Controller('accommodation'),
+    (0, swagger_1.ApiTags)('Accommodation'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.Controller)('accommodation'),
     __metadata("design:paramtypes", [accommodation_service_1.AccommodationService])
 ], AccommodationController);
 exports.AccommodationController = AccommodationController;

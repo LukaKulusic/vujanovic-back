@@ -4,29 +4,26 @@ import { ReservationDto } from "./dto/reservation.dto";
 import { Reservation } from "./entity/reservation.entity";
 import { UserRoles } from "../user/entity/enum/roles.enum";
 import { CountryService } from "src/country/country.service";
-import { FoodService } from "src/food/food.service";
 import { AccommodationService } from "src/accommodation/accommodation.service";
-import { IFilterReservationQuery } from "./interface/filter-reservation.interface";
 import { UpdateReservationsDto } from "./dto/update-reservations.dto";
 import { PaymentService } from "src/payment/payment.service";
-import { ProgramService } from "src/program/program.service";
-import { ReservationProgramService } from "src/reservation-program/reservation-program.service";
 import { MailService } from "src/mail/mail.service";
 import { UserService } from "src/user/user.service";
+import { ReservationAccommodationService } from "src/reservation-accommodation/reservation-accommodation.service";
+import { ReservationDescriptionService } from "src/reservation-description/reservation-description.service";
 export declare class ReservationService {
     private reservationRepo;
     private readonly countryService;
-    private readonly foodService;
     private readonly accommodationService;
     private readonly paymentService;
-    private readonly reservationProgramService;
-    private readonly programService;
     private readonly userService;
     private readonly mailService;
     private readonly dataSource;
-    constructor(reservationRepo: Repository<Reservation>, countryService: CountryService, foodService: FoodService, accommodationService: AccommodationService, paymentService: PaymentService, reservationProgramService: ReservationProgramService, programService: ProgramService, userService: UserService, mailService: MailService, dataSource: DataSource);
+    private readonly reservationAccommodationService;
+    private readonly reservationDescriptionService;
+    constructor(reservationRepo: Repository<Reservation>, countryService: CountryService, accommodationService: AccommodationService, paymentService: PaymentService, userService: UserService, mailService: MailService, dataSource: DataSource, reservationAccommodationService: ReservationAccommodationService, reservationDescriptionService: ReservationDescriptionService);
     getList(query: any): Promise<{
-        data: Reservation[];
+        data: any;
         total: number;
     }>;
     getMany(ids: Array<number>): Promise<{
@@ -82,17 +79,29 @@ export declare class ReservationService {
     deleteMany(ids: Array<number>): Promise<{
         data: number[];
     }>;
-    findAllReservationWithFilters(query: IFilterReservationQuery, take: number, skip: number): Promise<[Reservation[], number]>;
     findReservationByRole(role: UserRoles): Promise<{
         data: string;
+    }>;
+    getReportByMealCount(date: any): Promise<{
+        data: any[];
+        total: number;
     }>;
     getReportByCountry(query: any): Promise<{
         data: any;
         total: any;
     }>;
-    getReportByCash(query: any): Promise<{
+    getReportByPayment(query: any): Promise<{
         data: Reservation[];
         total: number;
     }>;
+    getReportByContact(query: any): Promise<{
+        data: Reservation[];
+        total: number;
+    }>;
+    getDailyReport(query: any): Promise<{
+        data: Reservation[];
+        total: number;
+    }>;
+    paginate: (items: any, page?: number, perPage?: number) => any;
     cronJob(): Promise<void>;
 }

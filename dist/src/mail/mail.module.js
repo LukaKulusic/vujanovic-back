@@ -13,7 +13,7 @@ const mail_service_1 = require("./mail.service");
 let MailModule = class MailModule {
 };
 MailModule = __decorate([
-    common_1.Module({
+    (0, common_1.Module)({
         imports: [
             mailer_1.MailerModule.forRoot({
                 transport: {

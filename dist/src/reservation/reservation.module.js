@@ -15,9 +15,6 @@ const reservation_entity_1 = require("./entity/reservation.entity");
 const program_service_1 = require("../program/program.service");
 const program_module_1 = require("../program/program.module");
 const program_entity_1 = require("../program/entity/program.entity");
-const reservation_program_entity_1 = require("../reservation-program/entity/reservation-program.entity");
-const reservation_program_module_1 = require("../reservation-program/reservation-program.module");
-const reservation_program_service_1 = require("../reservation-program/reservation-program.service");
 const country_module_1 = require("../country/country.module");
 const country_service_1 = require("../country/country.service");
 const country_entity_1 = require("../country/entity/country.entity");
@@ -35,40 +32,56 @@ const mail_module_1 = require("../mail/mail.module");
 const user_entity_1 = require("../user/entity/user.entity");
 const user_module_1 = require("../user/user.module");
 const user_service_1 = require("../user/user.service");
+const reservation_accommodation_entity_1 = require("../reservation-accommodation/entity/reservation-accommodation.entity");
+const reservation_accommodation_service_1 = require("../reservation-accommodation/reservation-accommodation.service");
+const reservation_description_program_entity_1 = require("../reservation-description-program/entity/reservation-description-program.entity");
+const reservation_description_entity_1 = require("../reservation-description/entity/reservation-description.entity");
+const reservation_description_food_entity_1 = require("../reservation-description-food/entity/reservation-description-food.entity");
+const reservation_description_module_1 = require("../reservation-description/reservation-description.module");
+const reservation_description_service_1 = require("../reservation-description/reservation-description.service");
+const reservation_description_program_module_1 = require("../reservation-description-program/reservation-description-program.module");
+const reservation_description_food_module_1 = require("../reservation-description-food/reservation-description-food.module");
 let ReservationModule = class ReservationModule {
 };
 ReservationModule = __decorate([
-    common_1.Module({
+    (0, common_1.Module)({
         imports: [
             typeorm_1.TypeOrmModule.forFeature([
                 reservation_entity_1.Reservation,
                 program_entity_1.Program,
-                reservation_program_entity_1.ReservationProgram,
+                reservation_description_entity_1.ReservationDescription,
                 country_entity_1.Country,
                 food_entity_1.Food,
                 accommodation_entity_1.Accommodation,
                 payment_entity_1.Payment,
                 user_entity_1.User,
+                reservation_accommodation_entity_1.ReservationAccommodation,
+                reservation_description_program_entity_1.ReservationDescriptionProgram,
+                reservation_description_food_entity_1.ReservationDescriptionFood,
             ]),
             user_module_1.UserModule,
             program_module_1.ProgramModule,
             payment_module_1.PaymentModule,
-            reservation_program_module_1.ReservationProgramModule,
             country_module_1.CountryModule,
             food_module_1.FoodModule,
             accommodation_module_1.AccommodationModule,
             mail_module_1.MailModule,
+            reservation_accommodation_entity_1.ReservationAccommodation,
+            reservation_description_module_1.ReservationDescriptionModule,
+            reservation_description_program_module_1.ReservationDescriptionProgramModule,
+            reservation_description_food_module_1.ReservationDescriptionFoodModule,
         ],
         providers: [
             user_service_1.UserService,
             payment_service_1.PaymentService,
             reservation_service_1.ReservationService,
             program_service_1.ProgramService,
-            reservation_program_service_1.ReservationProgramService,
             country_service_1.CountryService,
             food_service_1.FoodService,
             accommodation_service_1.AccommodationService,
             mail_service_1.MailService,
+            reservation_accommodation_service_1.ReservationAccommodationService,
+            reservation_description_service_1.ReservationDescriptionService,
         ],
         controllers: [reservation_controller_1.ReservationController],
         exports: [reservation_service_1.ReservationService],

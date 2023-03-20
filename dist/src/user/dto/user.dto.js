@@ -17,47 +17,47 @@ const role_dto_1 = require("./role.dto");
 class UserDto {
 }
 __decorate([
-    swagger_1.ApiProperty(),
-    class_validator_1.IsString(),
-    class_validator_1.MinLength(3, {
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.MinLength)(3, {
         message: 'Name is too short',
     }),
-    class_validator_1.MaxLength(20, {
+    (0, class_validator_1.MaxLength)(20, {
         message: 'Name is too long',
     }),
     __metadata("design:type", String)
 ], UserDto.prototype, "name", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    class_validator_1.IsString(),
-    class_validator_1.MinLength(3, {
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.MinLength)(3, {
         message: 'Username is too short',
     }),
-    class_validator_1.MaxLength(20, {
+    (0, class_validator_1.MaxLength)(20, {
         message: 'Username is too long',
     }),
     __metadata("design:type", String)
 ], UserDto.prototype, "username", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    class_validator_1.IsString(),
-    class_validator_1.MinLength(8, {
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.MinLength)(8, {
         message: 'Password is too short',
     }),
     __metadata("design:type", String)
 ], UserDto.prototype, "password", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    class_validator_1.IsEmail(),
-    class_validator_1.MinLength(5, {
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsEmail)(),
+    (0, class_validator_1.MinLength)(5, {
         message: 'Email is too short',
     }),
     __metadata("design:type", String)
 ], UserDto.prototype, "email", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    class_validator_1.ValidateNested(),
-    class_transformer_1.Type(() => role_dto_1.RoleDto),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.ValidateNested)(),
+    (0, class_transformer_1.Type)(() => role_dto_1.RoleDto),
     __metadata("design:type", role_dto_1.RoleDto)
 ], UserDto.prototype, "role", void 0);
 exports.UserDto = UserDto;

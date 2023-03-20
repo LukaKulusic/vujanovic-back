@@ -10,34 +10,32 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Food = void 0;
-const reservation_entity_1 = require("../../reservation/entity/reservation.entity");
+const reservation_description_food_entity_1 = require("../../reservation-description-food/entity/reservation-description-food.entity");
 const typeorm_1 = require("typeorm");
 let Food = class Food extends typeorm_1.BaseEntity {
 };
 __decorate([
-    typeorm_1.PrimaryGeneratedColumn('increment'),
+    (0, typeorm_1.PrimaryGeneratedColumn)('increment'),
     __metadata("design:type", Number)
 ], Food.prototype, "id", void 0);
 __decorate([
-    typeorm_1.Column(),
+    (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], Food.prototype, "name", void 0);
 __decorate([
-    typeorm_1.CreateDateColumn({ type: 'timestamp', select: false }),
+    (0, typeorm_1.CreateDateColumn)({ type: 'timestamp', select: false }),
     __metadata("design:type", Date)
 ], Food.prototype, "createdDate", void 0);
 __decorate([
-    typeorm_1.UpdateDateColumn({ type: 'timestamp', select: false }),
+    (0, typeorm_1.UpdateDateColumn)({ type: 'timestamp', select: false }),
     __metadata("design:type", Date)
 ], Food.prototype, "updatedDate", void 0);
 __decorate([
-    typeorm_1.OneToMany(() => reservation_entity_1.Reservation, (reservation) => reservation.food, {
-        onDelete: 'SET NULL',
-    }),
+    (0, typeorm_1.OneToMany)(() => reservation_description_food_entity_1.ReservationDescriptionFood, (foodToDescription) => foodToDescription.food),
     __metadata("design:type", Array)
-], Food.prototype, "reservations", void 0);
+], Food.prototype, "foodToDescriptions", void 0);
 Food = __decorate([
-    typeorm_1.Entity('food')
+    (0, typeorm_1.Entity)('food')
 ], Food);
 exports.Food = Food;
 //# sourceMappingURL=food.entity.js.map

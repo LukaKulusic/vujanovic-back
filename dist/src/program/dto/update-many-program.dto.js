@@ -15,7 +15,7 @@ const update_programs_dto_1 = require("./update-programs.dto");
 class UpdateManyProgramDto {
 }
 __decorate([
-    swagger_1.ApiProperty({ isArray: true, type: update_programs_dto_1.UpdateProgramsDto }),
+    (0, swagger_1.ApiProperty)({ isArray: true, type: update_programs_dto_1.UpdateProgramsDto }),
     __metadata("design:type", Array)
 ], UpdateManyProgramDto.prototype, "updateData", void 0);
 exports.UpdateManyProgramDto = UpdateManyProgramDto;

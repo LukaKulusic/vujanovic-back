@@ -15,7 +15,7 @@ const update_many_users_dto_1 = require("./update-many-users.dto");
 class UpdateManyUserDto {
 }
 __decorate([
-    swagger_1.ApiProperty({ isArray: true, type: update_many_users_dto_1.UpdateUsersDto }),
+    (0, swagger_1.ApiProperty)({ isArray: true, type: update_many_users_dto_1.UpdateUsersDto }),
     __metadata("design:type", Array)
 ], UpdateManyUserDto.prototype, "updateData", void 0);
 exports.UpdateManyUserDto = UpdateManyUserDto;

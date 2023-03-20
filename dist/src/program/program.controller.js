@@ -85,71 +85,71 @@ let ProgramController = class ProgramController {
     }
 };
 __decorate([
-    common_1.Get(),
-    __param(0, common_2.Req()),
+    (0, common_1.Get)(),
+    __param(0, (0, common_2.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], ProgramController.prototype, "getList", null);
 __decorate([
-    common_1.Get('/:id'),
-    __param(0, common_1.Param('id')),
+    (0, common_1.Get)('/:id'),
+    __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)
 ], ProgramController.prototype, "getById", null);
 __decorate([
-    common_1.Post('getMany'),
-    __param(0, common_1.Body()),
+    (0, common_1.Post)('getMany'),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [get_many_user_dto_1.GetManyDto]),
     __metadata("design:returntype", void 0)
 ], ProgramController.prototype, "getMany", null);
 __decorate([
-    common_1.Patch('/:id'),
-    roles_decorator_1.Roles(roles_enum_1.UserRoles.ADMIN),
-    __param(0, common_1.Param('id')),
-    __param(1, common_1.Body()),
+    (0, common_1.Patch)('/:id'),
+    (0, roles_decorator_1.Roles)(roles_enum_1.UserRoles.ADMIN),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, update_program_dto_1.UpdateProgramDto]),
     __metadata("design:returntype", Promise)
 ], ProgramController.prototype, "update", null);
 __decorate([
-    common_1.Post('updateMany'),
-    roles_decorator_1.Roles(roles_enum_1.UserRoles.ADMIN),
-    __param(0, common_1.Body()),
+    (0, common_1.Post)('updateMany'),
+    (0, roles_decorator_1.Roles)(roles_enum_1.UserRoles.ADMIN),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [update_many_program_dto_1.UpdateManyProgramDto]),
     __metadata("design:returntype", void 0)
 ], ProgramController.prototype, "updateMany", null);
 __decorate([
-    common_1.Post(),
-    roles_decorator_1.Roles(roles_enum_1.UserRoles.ADMIN),
-    __param(0, common_1.Body()),
+    (0, common_1.Post)(),
+    (0, roles_decorator_1.Roles)(roles_enum_1.UserRoles.ADMIN),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [program_dto_1.ProgramDto]),
     __metadata("design:returntype", Promise)
 ], ProgramController.prototype, "create", null);
 __decorate([
-    common_1.Delete('/:id'),
-    roles_decorator_1.Roles(roles_enum_1.UserRoles.ADMIN),
-    __param(0, common_1.Param('id')),
+    (0, common_1.Delete)('/:id'),
+    (0, roles_decorator_1.Roles)(roles_enum_1.UserRoles.ADMIN),
+    __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)
 ], ProgramController.prototype, "deleteUser", null);
 __decorate([
-    common_1.Post('deleteMany'),
-    roles_decorator_1.Roles(roles_enum_1.UserRoles.ADMIN),
-    __param(0, common_1.Body()),
+    (0, common_1.Post)('deleteMany'),
+    (0, roles_decorator_1.Roles)(roles_enum_1.UserRoles.ADMIN),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [get_many_user_dto_1.GetManyDto]),
     __metadata("design:returntype", Promise)
 ], ProgramController.prototype, "deleteMany", null);
 ProgramController = __decorate([
-    swagger_1.ApiTags('Program'),
-    swagger_1.ApiBearerAuth(),
-    common_1.Controller('program'),
+    (0, swagger_1.ApiTags)('Program'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.Controller)('program'),
     __metadata("design:paramtypes", [program_service_1.ProgramService])
 ], ProgramController);
 exports.ProgramController = ProgramController;

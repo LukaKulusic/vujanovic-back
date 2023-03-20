@@ -1,5 +1,5 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
+import { ApiProperty } from "@nestjs/swagger";
+import { Type } from "class-transformer";
 import {
   IsDate,
   IsString,
@@ -9,28 +9,49 @@ import {
   MaxLength,
   ValidateNested,
   IsDateString,
-} from 'class-validator';
-import { PaymentType } from '../entity/enum/payment-type.enum';
-import { Dto } from './dto';
+} from "class-validator";
+import { ReservationDescriptionDto } from "./description.dto";
+import { Dto } from "./dto";
 
 export class ReservationDto {
   @ApiProperty()
   @IsString()
   @MinLength(3, {
-    message: 'Name is too short',
+    message: "Name is too short",
   })
   @MaxLength(20, {
-    message: 'Name is too long',
+    message: "Name is too long",
   })
   name: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  contact: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  paymentDetails: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  desc: string;
 
   @ApiProperty()
   @IsNumber()
   personNumber: number;
 
+  @IsOptional()
   @ApiProperty()
   @IsNumber()
   veganNumber: number;
+
+  @IsOptional()
+  @ApiProperty()
+  @IsNumber()
+  vegetarianNumber: number;
 
   @ApiProperty()
   @IsDateString()
@@ -42,26 +63,30 @@ export class ReservationDto {
   // @Type(() => Date)
   dateTo: Date;
 
-  @ApiProperty({ type: 'integer', isArray: true })
-  programs: number[];
+  // @IsOptional()
+  // @ApiProperty({ type: 'integer', isArray: true })
+  // programs: number[];
 
+  @IsOptional()
   @ApiProperty()
   @ValidateNested()
   @Type(() => Dto)
   country: Dto;
 
-  @ApiProperty()
-  @ValidateNested()
-  @Type(() => Dto)
-  accommodation: Dto;
+  @IsOptional()
+  @ApiProperty({ type: "integer", isArray: true })
+  accommodations: number[];
 
-  @ApiProperty()
-  @ValidateNested()
-  @Type(() => Dto)
-  food: Dto;
-
+  @IsOptional()
   @ApiProperty()
   @ValidateNested()
   @Type(() => Dto)
   payment: Dto;
+
+  @IsOptional()
+  @ApiProperty({
+    isArray: true,
+    type: ReservationDescriptionDto,
+  })
+  description: ReservationDescriptionDto[];
 }

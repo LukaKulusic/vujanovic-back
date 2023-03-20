@@ -7,5 +7,5 @@ declare const Permission: {
     Accommodation: AccommodationPermission.Accommodation;
     User: UserPermission.User;
 };
-declare type Permission = UserPermission | AccommodationPermission | PaymentPermission | ProgramPermission | FoodPermission | ReservationPermission;
+type Permission = UserPermission | AccommodationPermission | PaymentPermission | ProgramPermission | FoodPermission | ReservationPermission;
 export default Permission;

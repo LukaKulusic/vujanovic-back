@@ -1,6 +1,6 @@
-import { ReservationDescriptionFood } from 'src/reservation-description-food/entity/reservation-description-food.entity';
-import { ReservationDescriptionProgram } from 'src/reservation-description-program/entity/reservation-description-program.entity';
-import { Reservation } from 'src/reservation/entity/reservation.entity';
+import { ReservationDescriptionFood } from "src/reservation-description-food/entity/reservation-description-food.entity";
+import { ReservationDescriptionProgram } from "src/reservation-description-program/entity/reservation-description-program.entity";
+import { Reservation } from "src/reservation/entity/reservation.entity";
 import {
   Entity,
   Column,
@@ -10,17 +10,18 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
-} from 'typeorm';
-@Entity('reservation_description')
+} from "typeorm";
+@Entity("reservation_description")
 export class ReservationDescription extends BaseEntity {
-  @PrimaryGeneratedColumn('increment')
+  @PrimaryGeneratedColumn("increment")
   id: number;
 
-  @Column({ type: 'timestamp' })
+  @Column({ type: "timestamp" })
   date: Date;
 
   @ManyToOne(() => Reservation, (reservation) => reservation.descriptions, {
     nullable: true,
+    onDelete: "CASCADE",
   })
   reservation: Reservation;
 
@@ -29,7 +30,7 @@ export class ReservationDescription extends BaseEntity {
   @OneToMany(
     () => ReservationDescriptionFood,
     (foodToDescription) => foodToDescription.description,
-    { cascade: true, eager: true },
+    { cascade: true, eager: true }
   )
   foodToDescriptions: ReservationDescriptionFood[];
   //pivot description program
@@ -37,7 +38,7 @@ export class ReservationDescription extends BaseEntity {
   @OneToMany(
     () => ReservationDescriptionProgram,
     (programToDescription) => programToDescription.description,
-    { cascade: true, eager: true },
+    { cascade: true, eager: true }
   )
   programsToDescriptions: ReservationDescriptionProgram[];
 }

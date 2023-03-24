@@ -12,6 +12,7 @@ import {
   UpdateDateColumn,
   OneToMany,
   ManyToOne,
+  Index,
 } from "typeorm";
 
 @Entity("reservation")
@@ -22,6 +23,7 @@ export class Reservation extends BaseEntity {
   @Column()
   name: string;
 
+  @Index()
   @Column({ nullable: true })
   contact: string;
 
@@ -75,21 +77,20 @@ export class Reservation extends BaseEntity {
 
   @OneToMany(
     () => ReservationDescription,
-    (description) => description.reservation,
-    {
-      onDelete: "SET NULL",
-    }
+    (description) => description.reservation
   )
   descriptions: ReservationDescription[];
 
   //MANY TO ONE
 
   @ManyToOne(() => Country, (country) => country.reservations, {
+    cascade: true,
     nullable: true,
   })
   country: Country;
 
   @ManyToOne(() => Payment, (payment) => payment.reservations, {
+    cascade: true,
     nullable: true,
   })
   payment: Payment;

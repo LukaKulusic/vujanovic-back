@@ -30,7 +30,7 @@ import { Cron } from "@nestjs/schedule";
 import { UserService } from "src/user/user.service";
 import { ReservationAccommodationService } from "src/reservation-accommodation/reservation-accommodation.service";
 import { ReservationDescriptionService } from "src/reservation-description/reservation-description.service";
-import { count } from "console";
+import { count, error } from "console";
 
 @Injectable()
 export class ReservationService {
@@ -99,10 +99,17 @@ export class ReservationService {
       .leftJoin("programsToDescriptions.program", "program")
       .leftJoin("description.foodToDescriptions", "foodToDescriptions")
       .leftJoin("foodToDescriptions.food", "food")
+      // .where(
+      //   `description.date BETWEEN '${new Date(
+      //     dateFrom
+      //   ).toISOString()}' AND '${new Date(dateTo).toISOString()}'`
+      // )
       .where(
-        `reservation.dateFrom BETWEEN '${new Date(
+        `description.date >= '${new Date(
           dateFrom
-        ).toISOString()}' AND '${new Date(dateTo).toISOString()}'`
+        ).toISOString()}' AND reservation.dateFrom <= '${new Date(
+          dateTo
+        ).toISOString()}'`
       )
       .andWhere("reservation.name like :name", { name: `%${keyword}%` })
       .orderBy("reservation.dateFrom", order)
@@ -651,15 +658,29 @@ export class ReservationService {
       if (date) {
         const dateAt = date.split("T")[0];
         count = await this.reservationRepo.query(`
-      select "food"."id" , "food"."name" , SUM("personNumber") as total,SUM("veganNumber") as vegan,SUM("vegetarianNumber") as vegetarian from "reservation"
-      inner join "reservation_description" on "reservation_description"."reservationId" = "reservation"."id"
-      inner join "reservation_description_food" on "reservation_description_food"."descriptionId" = "reservation_description"."id"
-      inner join "food" on "food".id = "reservation_description_food"."foodId"
-      where "reservation_description"."date"::date = '${dateAt}'
-      group by food.name, food.id
-      order by food.id ASC
+     
+      SELECT
+  "food"."id",
+  "food"."name",
+  SUM("reservation"."personNumber") AS total,
+  SUM("reservation"."veganNumber") AS vegan,
+  SUM("reservation"."vegetarianNumber") AS vegetarian
+FROM
+  "reservation"
+  INNER JOIN "reservation_description" ON "reservation_description"."reservationId" = "reservation"."id"
+  INNER JOIN "reservation_description_food" ON "reservation_description_food"."descriptionId" = "reservation_description"."id"
+  INNER JOIN "food" ON "food"."id" = "reservation_description_food"."foodId"
+WHERE
+  DATE_TRUNC('day', "reservation_description"."date") = DATE_TRUNC('day', '${dateAt}'::DATE)
+GROUP BY
+  "food"."id",
+  "food"."name"
+ORDER BY
+  "food"."id" ASC;
+
    `);
       }
+      console.error(count);
       const total = count.length;
       return { data: count, total };
     } catch (error) {
@@ -679,26 +700,47 @@ export class ReservationService {
     const report = await this.reservationRepo.query(`
  
 
- select count(country.name) as "totalReservation", country.name as id, SUM("personNumber") as total,SUM("veganNumber") as vegan,SUM("vegetarianNumber") as vegetarian from reservation
- inner join country on country.id = reservation."countryId" 
- inner join "reservation_description" on "reservation_description"."reservationId" = reservation.id
- inner join "reservation_description_program" on "reservation_description_program"."id" = "reservation_description"."reservationId"
- inner join "program" on "program".id = "reservation_description_program"."programId"
- where "reservation"."dateFrom" >= '${dateFrom}' and "reservation"."dateTo" <='${dateTo}'
- and "program"."id" in (${program})
- group by country.name
- offset ${skip}
- limit ${take}
+SELECT
+  COUNT(country.name) AS "totalReservation",
+  country.name AS id,
+  SUM("personNumber") AS total,
+  SUM("veganNumber") AS vegan,
+  SUM("vegetarianNumber") AS vegetarian
+FROM
+  reservation
+  INNER JOIN country ON country.id = reservation."countryId" 
+  INNER JOIN "reservation_description" ON "reservation_description"."reservationId" = reservation.id
+  INNER JOIN "reservation_description_program" ON "reservation_description_program"."descriptionId" = "reservation_description"."id"
+  INNER JOIN "program" ON "program".id = "reservation_description_program"."programId"
+WHERE
+  "reservation"."dateFrom" >= '${dateFrom}' AND "reservation"."dateTo" <= '${dateTo}'
+  AND "program"."id" IN (${program})
+GROUP BY
+  country.name
+OFFSET ${skip}
+LIMIT ${take}
+
  `);
+    console.log(report);
+
     const count = await this.reservationRepo.query(`
-    select count(country.name) as "totalReservation", country.name as id, SUM("personNumber") as total,SUM("veganNumber") as vegan,SUM("vegetarianNumber") as vegetarian from reservation
-    inner join country on country.id = reservation."countryId" 
-    inner join "reservation_description" on "reservation_description"."reservationId" = reservation.id
-    inner join "reservation_description_program" on "reservation_description_program"."id" = "reservation_description"."reservationId"
-    inner join "program" on "program".id = "reservation_description_program"."programId"
-    where "reservation"."dateFrom" >= '${dateFrom}' and "reservation"."dateTo" <='${dateTo}'
-    and "program"."id" in (${program})
-    group by country.name
+    SELECT
+  COUNT(country.name) AS "totalReservation",
+  country.name AS id,
+  SUM("personNumber") AS total,
+  SUM("veganNumber") AS vegan,
+  SUM("vegetarianNumber") AS vegetarian
+FROM
+  reservation
+  INNER JOIN country ON country.id = reservation."countryId" 
+  INNER JOIN "reservation_description" ON "reservation_description"."reservationId" = reservation.id
+  INNER JOIN "reservation_description_program" ON "reservation_description_program"."descriptionId" = "reservation_description"."id"
+  INNER JOIN "program" ON "program".id = "reservation_description_program"."programId"
+WHERE
+  "reservation"."dateFrom" >= '${dateFrom}' AND "reservation"."dateTo" <= '${dateTo}'
+  AND "program"."id" IN (${program})
+GROUP BY
+  country.name
  
  `);
     const total = count.length;
@@ -768,45 +810,88 @@ export class ReservationService {
       new Date(query.date).toISOString().split("T")[0] ||
       new Date().toISOString().split("T")[0];
 
-    const result = await this.reservationRepo.findAndCount({
-      select: {
-        id: true,
-        name: true,
-        personNumber: true,
-        veganNumber: true,
-        vegetarianNumber: true,
-        accommodationsToReservation: true,
-        descriptions: true,
-      },
-      relations: {
-        accommodationsToReservation: { accommodation: true },
-        descriptions: {
-          foodToDescriptions: { food: true },
-          programsToDescriptions: { program: true },
-        },
-      },
-      take: take,
-      skip: skip,
-      order: {
-        id: order,
-        descriptions: {
-          programsToDescriptions: {
-            id: "ASC",
-          },
-          foodToDescriptions: {
-            id: "ASC",
-          },
-        },
-        accommodationsToReservation: {
-          id: "ASC",
-        },
-      },
-      where: {
-        descriptions: {
-          date: Equal(new Date(date)),
-        },
-      },
-    });
+    const result = await this.reservationRepo
+      .createQueryBuilder("reservation")
+      .select([
+        "reservation.id",
+        "reservation.name",
+        "reservation.contact",
+        "reservation.personNumber",
+        "reservation.veganNumber",
+        "reservation.vegetarianNumber",
+      ])
+      .addSelect(["accommodationsToReservation"])
+      .addSelect(["accommodation.id", "accommodation.name"])
+      .addSelect(["description"])
+      .addSelect(["programsToDescriptions"])
+      .addSelect(["program.id", "program.title", "program.type"])
+      .addSelect(["foodToDescriptions"])
+      .addSelect(["food.id", "food.name"])
+
+      .leftJoin(
+        "reservation.accommodationsToReservation",
+        "accommodationsToReservation"
+      )
+      .leftJoin("accommodationsToReservation.accommodation", "accommodation")
+      .leftJoin("reservation.descriptions", "description")
+      .leftJoin("description.programsToDescriptions", "programsToDescriptions")
+      .leftJoin("programsToDescriptions.program", "program")
+      .leftJoin("description.foodToDescriptions", "foodToDescriptions")
+      .leftJoin("foodToDescriptions.food", "food")
+      .where(
+        `description.date >= '${new Date(date).toISOString()}' 
+         AND description.date < '${new Date(
+           date
+         ).toISOString()}'::timestamp + INTERVAL '1 day'`
+      )
+
+      .orderBy("reservation.id", order)
+      .addOrderBy("accommodation.id", "ASC")
+      .addOrderBy("foodToDescriptions.id", "ASC")
+      .addOrderBy("accommodationsToReservation.id", "ASC")
+      .addOrderBy("programsToDescriptions.id", "ASC")
+      .getManyAndCount();
+    console.error(result);
+
+    // const result = await this.reservationRepo.findAndCount({
+    //   select: {
+    //     id: true,
+    //     name: true,
+    //     personNumber: true,
+    //     veganNumber: true,
+    //     vegetarianNumber: true,
+    //     accommodationsToReservation: true,
+    //     descriptions: true,
+    //   },
+    //   relations: {
+    //     accommodationsToReservation: { accommodation: true },
+    //     descriptions: {
+    //       foodToDescriptions: { food: true },
+    //       programsToDescriptions: { program: true },
+    //     },
+    //   },
+    //   take: take,
+    //   skip: skip,
+    //   order: {
+    //     id: order,
+    //     descriptions: {
+    //       programsToDescriptions: {
+    //         id: "ASC",
+    //       },
+    //       foodToDescriptions: {
+    //         id: "ASC",
+    //       },
+    //     },
+    //     accommodationsToReservation: {
+    //       id: "ASC",
+    //     },
+    //   },
+    //   where: {
+    //     descriptions: {
+    //       date: Equal(new Date(date)),
+    //     },
+    //   },
+    // });
 
     const reservations = result[0];
 

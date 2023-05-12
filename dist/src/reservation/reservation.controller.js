@@ -126,6 +126,7 @@ let ReservationController = class ReservationController {
     }
     async getReportByMealCount(body) {
         const report = await this.reservationService.getReportByMealCount(body.date);
+        console.error(report);
         if (report) {
             return report;
         }
@@ -163,7 +164,6 @@ let ReservationController = class ReservationController {
 };
 __decorate([
     (0, common_1.Get)(),
-    (0, roles_decorator_1.Roles)(roles_enum_1.UserRoles.ADMIN, roles_enum_1.UserRoles.RECEPTIONIST),
     __param(0, (0, common_2.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
@@ -253,7 +253,6 @@ __decorate([
 ], ReservationController.prototype, "getReportByCountry", null);
 __decorate([
     (0, common_1.Post)("report/meals"),
-    (0, roles_decorator_1.Roles)(roles_enum_1.UserRoles.ADMIN),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [report_meals_dto_1.ReservationReportMealsDto]),
@@ -277,7 +276,6 @@ __decorate([
 ], ReservationController.prototype, "getReportByDate", null);
 __decorate([
     (0, common_1.Get)("report/daily"),
-    (0, roles_decorator_1.Roles)(roles_enum_1.UserRoles.ADMIN),
     __param(0, (0, common_1.Query)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),

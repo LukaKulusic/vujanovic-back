@@ -26,6 +26,7 @@ __decorate([
     __metadata("design:type", String)
 ], Reservation.prototype, "name", void 0);
 __decorate([
+    (0, typeorm_1.Index)(),
     (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", String)
 ], Reservation.prototype, "contact", void 0);
@@ -70,19 +71,19 @@ __decorate([
     __metadata("design:type", Array)
 ], Reservation.prototype, "accommodationsToReservation", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => reservation_description_entity_1.ReservationDescription, (description) => description.reservation, {
-        onDelete: "SET NULL",
-    }),
+    (0, typeorm_1.OneToMany)(() => reservation_description_entity_1.ReservationDescription, (description) => description.reservation),
     __metadata("design:type", Array)
 ], Reservation.prototype, "descriptions", void 0);
 __decorate([
     (0, typeorm_1.ManyToOne)(() => country_entity_1.Country, (country) => country.reservations, {
+        cascade: true,
         nullable: true,
     }),
     __metadata("design:type", country_entity_1.Country)
 ], Reservation.prototype, "country", void 0);
 __decorate([
     (0, typeorm_1.ManyToOne)(() => payment_entity_1.Payment, (payment) => payment.reservations, {
+        cascade: true,
         nullable: true,
     }),
     __metadata("design:type", payment_entity_1.Payment)

@@ -99,11 +99,6 @@ export class ReservationService {
       .leftJoin("programsToDescriptions.program", "program")
       .leftJoin("description.foodToDescriptions", "foodToDescriptions")
       .leftJoin("foodToDescriptions.food", "food")
-      // .where(
-      //   `description.date BETWEEN '${new Date(
-      //     dateFrom
-      //   ).toISOString()}' AND '${new Date(dateTo).toISOString()}'`
-      // )
       .where(
         `description.date >= '${new Date(
           dateFrom
@@ -122,17 +117,9 @@ export class ReservationService {
       const data = reservation.descriptions.map((element) => {
         const data = new Object();
         data["date"] = element.date.toISOString().split("T")[0];
-
-        // data["programTitles"] = element.programsToDescriptions.map((e) => {
-        //   return e.program.title;
-        // });
         data["programIds"] = element.programsToDescriptions.map((e) => {
           return e.program.id;
         });
-
-        // data["foodNames"] = element.foodToDescriptions.map((e) => {
-        //   return e.food.name;
-        // });
         data["foodIds"] = element.foodToDescriptions.map((e) => {
           return e.food.id;
         });
@@ -256,18 +243,10 @@ export class ReservationService {
     const data = result.descriptions.map((e) => {
       const data = new Object();
       data["date"] = e.date.toISOString().split("T")[0];
-
-      // data["programTitles"] = e.programsToDescriptions.map((e) => {
-      //   return e.program.title;
-      // });
-
       data["programIds"] = e.programsToDescriptions.map((e) => {
         return e.program.id;
       });
 
-      // data["foodNames"] = e.foodToDescriptions.map((e) => {
-      //   return e.food.name;
-      // });
       data["foodIds"] = e.foodToDescriptions.map((e) => {
         return e.food.id;
       });
@@ -680,7 +659,6 @@ ORDER BY
 
    `);
       }
-      console.error(count);
       const total = count.length;
       return { data: count, total };
     } catch (error) {
@@ -721,7 +699,6 @@ OFFSET ${skip}
 LIMIT ${take}
 
  `);
-    console.log(report);
 
     const count = await this.reservationRepo.query(`
     SELECT
@@ -851,47 +828,6 @@ GROUP BY
       .addOrderBy("accommodationsToReservation.id", "ASC")
       .addOrderBy("programsToDescriptions.id", "ASC")
       .getManyAndCount();
-    console.error(result);
-
-    // const result = await this.reservationRepo.findAndCount({
-    //   select: {
-    //     id: true,
-    //     name: true,
-    //     personNumber: true,
-    //     veganNumber: true,
-    //     vegetarianNumber: true,
-    //     accommodationsToReservation: true,
-    //     descriptions: true,
-    //   },
-    //   relations: {
-    //     accommodationsToReservation: { accommodation: true },
-    //     descriptions: {
-    //       foodToDescriptions: { food: true },
-    //       programsToDescriptions: { program: true },
-    //     },
-    //   },
-    //   take: take,
-    //   skip: skip,
-    //   order: {
-    //     id: order,
-    //     descriptions: {
-    //       programsToDescriptions: {
-    //         id: "ASC",
-    //       },
-    //       foodToDescriptions: {
-    //         id: "ASC",
-    //       },
-    //     },
-    //     accommodationsToReservation: {
-    //       id: "ASC",
-    //     },
-    //   },
-    //   where: {
-    //     descriptions: {
-    //       date: Equal(new Date(date)),
-    //     },
-    //   },
-    // });
 
     const reservations = result[0];
 

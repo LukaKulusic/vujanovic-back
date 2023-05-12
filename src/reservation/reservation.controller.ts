@@ -25,7 +25,6 @@ import { GetManyDto } from "src/user/dto/get-many-user.dto";
 import { UpdateManyReservationDto } from "./dto/update-many-reservation.dto";
 import { Public } from "src/auth/decorator/public.decorator";
 import { ReservationReportMealsDto } from "./dto/report-meals.dto";
-import { error } from "console";
 @ApiTags("Reservation")
 @ApiBearerAuth()
 @Controller("reservation")
@@ -34,8 +33,7 @@ export class ReservationController {
 
   @Get()
   async getAll(@Req() req: Request) {
-    return await this.reservationService //.findReservationByRole(UserRoles.COOK);
-      .getList(req.query); //
+    return await this.reservationService.getList(req.query);
   }
   @Get("/:id")
   @Roles(UserRoles.ADMIN, UserRoles.RECEPTIONIST)
@@ -177,7 +175,6 @@ export class ReservationController {
     const report = await this.reservationService.getReportByMealCount(
       body.date
     );
-    console.error(report);
     if (report) {
       return report;
     } else {

@@ -71,7 +71,7 @@ export class UpdateReservationDto {
 
   @ApiProperty()
   @IsOptional()
-  @ValidateNested()
+  // @ValidateNested()
   @Type(() => UpdateDto)
   country: UpdateDto;
 
@@ -87,7 +87,7 @@ export class UpdateReservationDto {
 
   @ApiProperty()
   @IsOptional()
-  @ValidateNested()
+  // @ValidateNested()
   @Type(() => UpdateDto)
   payment: UpdateDto;
 

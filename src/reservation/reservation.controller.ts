@@ -161,7 +161,7 @@ export class ReservationController {
     }
   }
   @Get("report/country")
-  @Roles(UserRoles.ADMIN)
+  @Roles(UserRoles.ADMIN, UserRoles.RECEPTIONIST)
   async getReportByCountry(@Query() query) {
     const report = await this.reservationService.getReportByCountry(query);
     if (report) {
@@ -192,7 +192,7 @@ export class ReservationController {
     }
   }
   @Get("report/contact")
-  @Roles(UserRoles.ADMIN)
+  @Roles(UserRoles.ADMIN, UserRoles.RECEPTIONIST)
   async getReportByDate(@Query() query) {
     const report = await this.reservationService.getReportByContact(query);
     if (report) {

@@ -23,9 +23,6 @@ __decorate([
     (0, class_validator_1.MinLength)(3, {
         message: "Name is too short",
     }),
-    (0, class_validator_1.MaxLength)(20, {
-        message: "Name is too long",
-    }),
     __metadata("design:type", String)
 ], ReservationDto.prototype, "name", void 0);
 __decorate([

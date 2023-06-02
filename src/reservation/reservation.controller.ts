@@ -36,7 +36,7 @@ export class ReservationController {
     return await this.reservationService.getList(req.query);
   }
   @Get("/:id")
-  @Roles(UserRoles.ADMIN, UserRoles.RECEPTIONIST)
+  @Roles()
   async getById(@Param("id") id: number) {
     const reservation = await this.reservationService.getOne(id);
     if (reservation) {
@@ -75,18 +75,29 @@ export class ReservationController {
     if (updatedReservation) {
       res.send(updatedReservation);
 
-      const text = `Azurirana rezervacija id:${
-        updatedReservation.data.id
-      }, ime:${updatedReservation.data.name}, od:${
-        updatedReservation.data.dateFrom.toISOString().split("T")[0]
-      }, do:${
-        updatedReservation.data.dateTo.toISOString().split("T")[0]
-      }, broj osoba:${updatedReservation.data.personNumber}, broj vegana:${
-        updatedReservation.data.veganNumber
-      },  broj vegetarijanaca:${
-        updatedReservation.data.vegetarianNumber
-      }, smjestaj:[${updatedReservation.data["accommodationName"]}]
-          `;
+      const text = `<div>
+  <h2>Updated Reservation:</h2>
+  <p><strong>ID:</strong> ${updatedReservation.data.id}</p>
+  <p><strong>Name:</strong> ${updatedReservation.data.name}</p>
+  <p><strong>From:</strong> ${
+    updatedReservation.data.dateFrom.toISOString().split("T")[0]
+  }</p>
+  <p><strong>To:</strong> ${
+    updatedReservation.data.dateTo.toISOString().split("T")[0]
+  }</p>
+  <p><strong>Number of People:</strong> ${
+    updatedReservation.data.personNumber
+  }</p>
+  <p><strong>Number of Vegans:</strong> ${
+    updatedReservation.data.veganNumber
+  }</p>
+  <p><strong>Number of Vegetarians:</strong> ${
+    updatedReservation.data.vegetarianNumber
+  }</p>
+  <p><strong>Accommodation:</strong> [${
+    updatedReservation.data["accommodationName"]
+  }]</p>
+</div>`;
 
       await this.reservationService.newReservationEmail(text);
     } else {
@@ -117,16 +128,19 @@ export class ReservationController {
     res.send(result);
 
     if (result) {
-      const text = `Nova rezervacija id:${result.data.id}, ime:${
-        result.data.name
-      }, od:${result.data.dateFrom.toISOString().split("T")[0]}, do:${
-        result.data.dateTo.toISOString().split("T")[0]
-      }, broj osoba:${result.data.personNumber}, broj vegana:${
-        result.data.veganNumber
-      },  broj vegetarijanaca:${result.data.vegetarianNumber}, smjestaj:[${
-        result.data["accommodationName"]
-      }]
-          `;
+      const text = `<div>
+  <h2>New Reservation:</h2>
+  <p><strong>ID:</strong> ${result.data.id}</p>
+  <p><strong>Name:</strong> ${result.data.name}</p>
+  <p><strong>From:</strong> ${
+    result.data.dateFrom.toISOString().split("T")[0]
+  }</p>
+  <p><strong>To:</strong> ${result.data.dateTo.toISOString().split("T")[0]}</p>
+  <p><strong>Number of People:</strong> ${result.data.personNumber}</p>
+  <p><strong>Number of Vegans:</strong> ${result.data.veganNumber}</p>
+  <p><strong>Number of Vegetarians:</strong> ${result.data.vegetarianNumber}</p>
+  <p><strong>Accommodation:</strong> [${result.data["accommodationName"]}]</p>
+</div>`;
 
       await this.reservationService.newReservationEmail(text);
     }
@@ -173,6 +187,17 @@ export class ReservationController {
   @Post("report/meals")
   async getReportByMealCount(@Body() body: ReservationReportMealsDto) {
     const report = await this.reservationService.getReportByMealCount(
+      body.date
+    );
+    if (report) {
+      return report;
+    } else {
+      throw new HttpException("Bad request", HttpStatus.BAD_REQUEST);
+    }
+  }
+  @Post("report/programs")
+  async getReportByProgramCount(@Body() body: ReservationReportMealsDto) {
+    const report = await this.reservationService.getReportByProgramCount(
       body.date
     );
     if (report) {

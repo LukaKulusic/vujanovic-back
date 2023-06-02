@@ -355,7 +355,6 @@ let ReservationService = class ReservationService {
     }
     async findReservationByRole(role) {
         const date = new Date();
-        date.setDate(date.getDate() + 7);
         const dateString = date.toISOString().split("T")[0];
         const reservations = await this.reservationRepo
             .createQueryBuilder("reservation")
@@ -398,6 +397,7 @@ let ReservationService = class ReservationService {
         if (reservations[1] === 0)
             return { data: "" };
         if (role === roles_enum_1.UserRoles.ADMIN || role === roles_enum_1.UserRoles.RECEPTIONIST) {
+            console.error("ADMIN");
             let text = "";
             let programData = "";
             let foodData = "";
@@ -426,10 +426,10 @@ let ReservationService = class ReservationService {
                 delete reservation.descriptions;
                 delete reservation.accommodationsToReservation;
                 reservation["description"].map((e) => {
-                    programData += `(Datum: ${e.date}, programi:[${e.programTitles}]); `;
+                    programData += `<div>Datum: ${e.date}, programi:${e.programTitles};</div> `;
                 });
                 reservation["description"].map((e) => {
-                    foodData += `Datum: ${e.date}, obroci:[${e.foodNames}]; `;
+                    foodData += `<div>Datum: ${e.date}, obroci:${e.foodNames};</div> `;
                 });
                 if (reservation.payment)
                     payment = reservation.payment.type;
@@ -438,17 +438,43 @@ let ReservationService = class ReservationService {
                 total += reservation.personNumber;
                 totalVegan += reservation.veganNumber;
                 totalVegetarian += reservation.vegetarianNumber;
-                let data = `[
-          |id:${reservation.id}, ime:${reservation.name}, broj osoba:${reservation.personNumber}, broj vegana:${reservation.veganNumber}, broj vegetarijanaca:${reservation.personNumber}, smestaj:[${reservation["accommodations"]}],od:${reservation.dateFrom.toISOString().split("T")[0]}, do:${reservation.dateTo.toISOString().split("T")[0]}], programi:[${programData}], tip obroka:[${foodData}], tip placanja:${payment}], detalji placanja:${reservation.paymentDetails}, drzava:${country};|
-        `;
+                let data = `
+        <div>
+        <hr style="border: 1px solid black; margin-top: 20px;">
+          <p><strong>ID:</strong> ${reservation.id}</p>
+          <p><strong>Name:</strong> ${reservation.name}</p>
+          <p><strong>Number of People:</strong> ${reservation.personNumber}</p>
+          <p><strong>Number of Vegans:</strong> ${reservation.veganNumber}</p>
+          <p><strong>Number of Vegetarians:</strong> ${reservation.personNumber}</p>
+          <p><strong>Accommodation:</strong> ${reservation["accommodations"]}</p>
+          <p><strong>From:</strong> ${reservation.dateFrom.toISOString().split("T")[0]}</p>
+          <p><strong>To:</strong> ${reservation.dateTo.toISOString().split("T")[0]}</p>
+          <p><strong>Programs:</strong> ${programData}</p>
+          <p><strong>Meal Type:</strong> ${foodData}</p>
+          <p><strong>Payment Type:</strong> ${payment}</p>
+          <p><strong>Payment Details:</strong> ${reservation.paymentDetails}</p>
+          <p><strong>Country:</strong> ${country}</p>
+          <hr style="border: 1px solid black; margin-top: 20px;">
+        </div>
+      `;
                 text += data;
             }
-            const textAdmin = `Broj rezervacija:${reservations[1]},ukupno osoba:${total}, ukupno vegana:${totalVegan},ukupno vegetarijanaca:${totalVegetarian}, datum: ${dateString}, opis:${text} `;
+            const textAdmin = `
+      <div>
+        <p><strong>Number of Reservations:</strong> ${reservations[1]}</p>
+        <p><strong>Total Number of People:</strong> ${total}</p>
+        <p><strong>Total Number of Vegans:</strong> ${totalVegan}</p>
+        <p><strong>Total Number of Vegetarians:</strong> ${totalVegetarian}</p>
+        <p><strong>Date:</strong> ${dateString}</p>
+        <p><strong>Description:</strong> ${text}</p>
+      </div>
+    `;
             return {
                 data: textAdmin,
             };
         }
         else if (role === roles_enum_1.UserRoles.TOUR_GUIDE) {
+            console.error("GUIDE");
             let text = "";
             let programData = "";
             let country = "";
@@ -465,22 +491,40 @@ let ReservationService = class ReservationService {
                 reservation["description"] = description;
                 delete reservation.descriptions;
                 reservation["description"].map((e) => {
-                    programData += `(Datum: ${e.date}, programi:[${e.programTitles}]); `;
+                    programData += `<div>Datum: ${e.date}, programi:${e.programTitles};</div> `;
                 });
                 if (reservation.country)
                     country = reservation.country.name;
                 total += reservation.personNumber;
-                let data = `[|rezervacija:${reservation.id}, broj osoba:${reservation.personNumber}, od:${reservation.dateFrom.toISOString().split("T")[0]}, do:${reservation.dateTo.toISOString().split("T")[0]}], programi:[${programData}], drzava:${country};|
-        `;
+                let data = `
+  <div>
+  <hr style="border: 1px solid black; margin-top: 20px;">
+    <p><strong>Reservation:</strong> ${reservation.id}</p>
+    <p><strong>Number of People:</strong> ${reservation.personNumber}</p>
+    <p><strong>From:</strong> ${reservation.dateFrom.toISOString().split("T")[0]}</p>
+    <p><strong>To:</strong> ${reservation.dateTo.toISOString().split("T")[0]}</p>
+    <p><strong>Programs:</strong> ${programData}</p>
+    <p><strong>Country:</strong> ${country}</p>
+    <hr style="border: 1px solid black; margin-top: 20px;">
+  </div>
+`;
                 text += data;
             }
-            const textTourGuide = `Broj rezervacija:${reservations[1]}, ukupno osoba:${total}, datum: ${dateString}:
-      ${text} `;
+            const textTourGuide = `
+      <div>
+        <p><strong>Number of Reservations:</strong> ${reservations[1]}</p>
+        <p><strong>Total Number of People:</strong> ${total}</p>
+        <p><strong>Date:</strong> ${dateString}</p>
+        <p><strong>Reservation Details:</strong></p>
+        ${text}
+      </div>
+    `;
             return {
                 data: textTourGuide,
             };
         }
         else if (role === roles_enum_1.UserRoles.COOK) {
+            console.error("COOK");
             let text = "";
             let foodData = "";
             let total = 0;
@@ -498,16 +542,38 @@ let ReservationService = class ReservationService {
                 reservation["description"] = description;
                 delete reservation.descriptions;
                 reservation["description"].map((e) => {
-                    foodData += `(Datum: ${e.date}, obroci:[${e.foodNames}]); `;
+                    foodData += `<div>Datum: ${e.date}, obroci:${e.foodNames};</div> `;
                 });
                 total += reservation.personNumber;
                 totalVegan += reservation.veganNumber;
                 totalVegetarian += reservation.vegetarianNumber;
-                let data = `[| rezervacija:${reservation.id}, broj osoba:${reservation.personNumber}, broj vegana:${reservation.veganNumber}, broj vegetarijanaca:${reservation.personNumber},od:${reservation.dateFrom.toISOString().split("T")[0]}, do:${reservation.dateTo.toISOString().split("T")[0]}, obroci:${foodData}];
-        `;
+                let data = `
+  <div>
+    <hr style="border: 1px solid black; margin-top: 20px;">
+    <p><strong>Reservation:</strong> ${reservation.id}</p>
+    <p><strong>Number of People:</strong> ${reservation.personNumber}</p>
+    <p><strong>Number of Vegans:</strong> ${reservation.veganNumber}</p>
+    <p><strong>Number of Vegetarians:</strong> ${reservation.personNumber}</p>
+    <p><strong>From:</strong> ${reservation.dateFrom.toISOString().split("T")[0]}</p>
+    <p><strong>To:</strong> ${reservation.dateTo.toISOString().split("T")[0]}</p>
+    <p><strong>Meals:</strong> ${foodData}</p>
+    <hr style="border: 1px solid black; margin-top: 20px;">
+  </div>
+`;
                 text += data;
             }
-            const textCook = `Broj rezervacija:${reservations[1]}, datum: ${dateString}, ukupno osoba:${total}, ukupno vegana:${totalVegan}, ukupno vegetarijanaca:${totalVegetarian}, \n :${text} }`;
+            const textCook = `
+      <div>
+        <p><strong>Number of Reservations:</strong> ${reservations[1]}</p>
+        <p><strong>Date:</strong> ${dateString}</p>
+        <p><strong>Total Number of People:</strong> ${total}</p>
+        <p><strong>Total Number of Vegans:</strong> ${totalVegan}</p>
+        <p><strong>Total Number of Vegetarians:</strong> ${totalVegetarian}</p>
+        <p><strong>Description:</strong></p>
+        <p>${text}</p>
+      </div>
+    `;
+            console.error(textCook);
             return {
                 data: textCook,
             };
@@ -541,7 +607,39 @@ ORDER BY
 
    `);
             }
-            console.error(count);
+            const total = count.length;
+            return { data: count, total };
+        }
+        catch (error) {
+            throw new common_1.BadRequestException(error.message);
+        }
+    }
+    async getReportByProgramCount(date) {
+        try {
+            let count = [];
+            if (date) {
+                const dateAt = date.split("T")[0];
+                count = await this.reservationRepo.query(`
+     
+      SELECT
+  "program"."id",
+  "program"."title",
+  count("program"."id") AS total
+FROM
+  "reservation"
+  INNER JOIN "reservation_description" ON "reservation_description"."reservationId" = "reservation"."id"
+  INNER JOIN "reservation_description_program" ON "reservation_description_program"."descriptionId" = "reservation_description"."id"
+  INNER JOIN "program" ON "program"."id" = "reservation_description_program"."programId"
+WHERE
+  DATE_TRUNC('day', "reservation_description"."date") = DATE_TRUNC('day', '${dateAt}'::DATE)
+GROUP BY
+  "program"."id",
+  "program"."title"
+ORDER BY
+  "program"."id" ASC;
+
+   `);
+            }
             const total = count.length;
             return { data: count, total };
         }
@@ -581,7 +679,6 @@ OFFSET ${skip}
 LIMIT ${take}
 
  `);
-        console.log(report);
         const count = await this.reservationRepo.query(`
     SELECT
   COUNT(country.name) AS "totalReservation",
@@ -695,7 +792,6 @@ GROUP BY
             .addOrderBy("accommodationsToReservation.id", "ASC")
             .addOrderBy("programsToDescriptions.id", "ASC")
             .getManyAndCount();
-        console.error(result);
         const reservations = result[0];
         const data = reservations.map((reservation) => {
             const data = reservation.descriptions.map((element) => {
@@ -728,6 +824,7 @@ GROUP BY
         for (const user of users) {
             const text = await this.findReservationByRole(user.role);
             if (text.data.length) {
+                console.error(text);
                 await this.mailService.sendEmail(user.email, text.data);
             }
         }
@@ -735,7 +832,7 @@ GROUP BY
     }
 };
 __decorate([
-    (0, schedule_1.Cron)("0 0 12 * * *"),
+    (0, schedule_1.Cron)("30 *  * * * *"),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)

@@ -6,7 +6,6 @@ import {
   IsNumber,
   IsOptional,
   MinLength,
-  MaxLength,
   ValidateNested,
   IsDateString,
 } from "class-validator";
@@ -18,9 +17,6 @@ export class ReservationDto {
   @IsString()
   @MinLength(3, {
     message: "Name is too short",
-  })
-  @MaxLength(20, {
-    message: "Name is too long",
   })
   name: string;
 

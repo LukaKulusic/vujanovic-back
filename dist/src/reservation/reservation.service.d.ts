@@ -86,6 +86,10 @@ export declare class ReservationService {
         data: any[];
         total: number;
     }>;
+    getReportByProgramCount(date: any): Promise<{
+        data: any[];
+        total: number;
+    }>;
     getReportByCountry(query: any): Promise<{
         data: any;
         total: any;

@@ -24,9 +24,6 @@ __decorate([
     (0, class_validator_1.MinLength)(3, {
         message: "Name is too short",
     }),
-    (0, class_validator_1.MaxLength)(20, {
-        message: "Name is too long",
-    }),
     __metadata("design:type", String)
 ], UpdateReservationDto.prototype, "name", void 0);
 __decorate([
@@ -80,7 +77,6 @@ __decorate([
 __decorate([
     (0, swagger_1.ApiProperty)(),
     (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.ValidateNested)(),
     (0, class_transformer_1.Type)(() => dto_1.UpdateDto),
     __metadata("design:type", dto_1.UpdateDto)
 ], UpdateReservationDto.prototype, "country", void 0);
@@ -92,7 +88,6 @@ __decorate([
 __decorate([
     (0, swagger_1.ApiProperty)(),
     (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.ValidateNested)(),
     (0, class_transformer_1.Type)(() => dto_1.UpdateDto),
     __metadata("design:type", dto_1.UpdateDto)
 ], UpdateReservationDto.prototype, "payment", void 0);

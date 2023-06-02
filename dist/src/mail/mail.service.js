@@ -24,7 +24,7 @@ let MailService = MailService_1 = class MailService {
                 to: email,
                 from: process.env.MAIL_FROM,
                 subject: "Rezervacija",
-                text: text,
+                html: text,
             });
         }
         catch (error) {

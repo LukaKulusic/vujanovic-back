@@ -31,8 +31,7 @@ let ReservationController = class ReservationController {
         this.reservationService = reservationService;
     }
     async getAll(req) {
-        return await this.reservationService
-            .getList(req.query);
+        return await this.reservationService.getList(req.query);
     }
     async getById(id) {
         const reservation = await this.reservationService.getOne(id);
@@ -62,8 +61,17 @@ let ReservationController = class ReservationController {
         const updatedReservation = await this.reservationService.update(id, body);
         if (updatedReservation) {
             res.send(updatedReservation);
-            const text = `Azurirana rezervacija id:${updatedReservation.data.id}, ime:${updatedReservation.data.name}, od:${updatedReservation.data.dateFrom.toISOString().split("T")[0]}, do:${updatedReservation.data.dateTo.toISOString().split("T")[0]}, broj osoba:${updatedReservation.data.personNumber}, broj vegana:${updatedReservation.data.veganNumber},  broj vegetarijanaca:${updatedReservation.data.vegetarianNumber}, smjestaj:[${updatedReservation.data["accommodationName"]}]
-          `;
+            const text = `<div>
+  <h2>Updated Reservation:</h2>
+  <p><strong>ID:</strong> ${updatedReservation.data.id}</p>
+  <p><strong>Name:</strong> ${updatedReservation.data.name}</p>
+  <p><strong>From:</strong> ${updatedReservation.data.dateFrom.toISOString().split("T")[0]}</p>
+  <p><strong>To:</strong> ${updatedReservation.data.dateTo.toISOString().split("T")[0]}</p>
+  <p><strong>Number of People:</strong> ${updatedReservation.data.personNumber}</p>
+  <p><strong>Number of Vegans:</strong> ${updatedReservation.data.veganNumber}</p>
+  <p><strong>Number of Vegetarians:</strong> ${updatedReservation.data.vegetarianNumber}</p>
+  <p><strong>Accommodation:</strong> [${updatedReservation.data["accommodationName"]}]</p>
+</div>`;
             await this.reservationService.newReservationEmail(text);
         }
         else {
@@ -86,8 +94,17 @@ let ReservationController = class ReservationController {
         const result = await this.reservationService.getOne(reservation.id);
         res.send(result);
         if (result) {
-            const text = `Nova rezervacija id:${result.data.id}, ime:${result.data.name}, od:${result.data.dateFrom.toISOString().split("T")[0]}, do:${result.data.dateTo.toISOString().split("T")[0]}, broj osoba:${result.data.personNumber}, broj vegana:${result.data.veganNumber},  broj vegetarijanaca:${result.data.vegetarianNumber}, smjestaj:[${result.data["accommodationName"]}]
-          `;
+            const text = `<div>
+  <h2>New Reservation:</h2>
+  <p><strong>ID:</strong> ${result.data.id}</p>
+  <p><strong>Name:</strong> ${result.data.name}</p>
+  <p><strong>From:</strong> ${result.data.dateFrom.toISOString().split("T")[0]}</p>
+  <p><strong>To:</strong> ${result.data.dateTo.toISOString().split("T")[0]}</p>
+  <p><strong>Number of People:</strong> ${result.data.personNumber}</p>
+  <p><strong>Number of Vegans:</strong> ${result.data.veganNumber}</p>
+  <p><strong>Number of Vegetarians:</strong> ${result.data.vegetarianNumber}</p>
+  <p><strong>Accommodation:</strong> [${result.data["accommodationName"]}]</p>
+</div>`;
             await this.reservationService.newReservationEmail(text);
         }
     }
@@ -126,7 +143,15 @@ let ReservationController = class ReservationController {
     }
     async getReportByMealCount(body) {
         const report = await this.reservationService.getReportByMealCount(body.date);
-        console.error(report);
+        if (report) {
+            return report;
+        }
+        else {
+            throw new common_1.HttpException("Bad request", common_1.HttpStatus.BAD_REQUEST);
+        }
+    }
+    async getReportByProgramCount(body) {
+        const report = await this.reservationService.getReportByProgramCount(body.date);
         if (report) {
             return report;
         }
@@ -171,7 +196,7 @@ __decorate([
 ], ReservationController.prototype, "getAll", null);
 __decorate([
     (0, common_1.Get)("/:id"),
-    (0, roles_decorator_1.Roles)(roles_enum_1.UserRoles.ADMIN, roles_enum_1.UserRoles.RECEPTIONIST),
+    (0, roles_decorator_1.Roles)(),
     __param(0, (0, common_1.Param)("id")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
@@ -245,7 +270,7 @@ __decorate([
 ], ReservationController.prototype, "getReservationByRole", null);
 __decorate([
     (0, common_1.Get)("report/country"),
-    (0, roles_decorator_1.Roles)(roles_enum_1.UserRoles.ADMIN),
+    (0, roles_decorator_1.Roles)(roles_enum_1.UserRoles.ADMIN, roles_enum_1.UserRoles.RECEPTIONIST),
     __param(0, (0, common_1.Query)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
@@ -259,6 +284,13 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], ReservationController.prototype, "getReportByMealCount", null);
 __decorate([
+    (0, common_1.Post)("report/programs"),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [report_meals_dto_1.ReservationReportMealsDto]),
+    __metadata("design:returntype", Promise)
+], ReservationController.prototype, "getReportByProgramCount", null);
+__decorate([
     (0, common_1.Get)("report/payment"),
     (0, roles_decorator_1.Roles)(roles_enum_1.UserRoles.ADMIN),
     __param(0, (0, common_1.Query)()),
@@ -268,7 +300,7 @@ __decorate([
 ], ReservationController.prototype, "getReportByCash", null);
 __decorate([
     (0, common_1.Get)("report/contact"),
-    (0, roles_decorator_1.Roles)(roles_enum_1.UserRoles.ADMIN),
+    (0, roles_decorator_1.Roles)(roles_enum_1.UserRoles.ADMIN, roles_enum_1.UserRoles.RECEPTIONIST),
     __param(0, (0, common_1.Query)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),

@@ -72,6 +72,10 @@ export declare class ReservationController {
         data: any[];
         total: number;
     }>;
+    getReportByProgramCount(body: ReservationReportMealsDto): Promise<{
+        data: any[];
+        total: number;
+    }>;
     getReportByCash(query: any): Promise<{
         data: import("./entity/reservation.entity").Reservation[];
         total: number;

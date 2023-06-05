@@ -134,7 +134,6 @@ export class ReservationController {
   <p><strong>Accommodation:</strong> ${result.data["accommodationName"]}</p>
   <p><strong>Programs:</strong> ${result.data["programData"]}</p>
   </div>`;
-      console.error(text);
       await this.reservationService.newReservationEmail(text);
     }
   }
@@ -158,8 +157,6 @@ export class ReservationController {
       if (role) {
         const data = await this.reservationService.findReservationByRole(role);
         if (data.data.length) {
-          console.log(data);
-
           return data;
         } else return;
       }

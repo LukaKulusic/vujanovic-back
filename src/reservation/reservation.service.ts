@@ -699,7 +699,6 @@ export class ReservationService {
         <p>${text}</p>
       </div>
     `;
-      console.error(textCook);
       return {
         data: textCook,
       };

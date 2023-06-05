@@ -285,15 +285,8 @@ export class ReservationService {
   }
   async newReservationEmail(text: string) {
     const users = await this.userService.findWithRole();
-    const filteredUsers = users.filter((e) => {
-      return (
-        e.role === UserRoles.ADMIN ||
-        e.role === UserRoles.RECEPTIONIST ||
-        e.role === UserRoles.TOUR_GUIDE
-      );
-    });
 
-    for (const user of filteredUsers) {
+    for (const user of users) {
       await this.mailService.sendEmail(user.email, text);
     }
   }

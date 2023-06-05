@@ -240,16 +240,20 @@ export class ReservationService {
     if (!result) {
       throw new HttpException("Reservation not found", HttpStatus.NOT_FOUND);
     }
+    let programData = "";
     const data = result.descriptions.map((e) => {
       const data = new Object();
       data["date"] = e.date.toISOString().split("T")[0];
       data["programIds"] = e.programsToDescriptions.map((e) => {
         return e.program.id;
       });
-
       data["foodIds"] = e.foodToDescriptions.map((e) => {
         return e.food.id;
       });
+      data["programNames"] = e.programsToDescriptions.map((e) => {
+        return e.program.title;
+      });
+      programData += `<div>Datum: ${data["date"]}, programi: [${data["programNames"]}];</div> `;
 
       return data;
     });
@@ -262,11 +266,13 @@ export class ReservationService {
         return element.accommodation.name;
       }
     );
+
     result["undefined"] = data;
     result["description"] = data;
     delete result.descriptions;
     result["accommodations"] = accommodations;
     result["accommodationName"] = accommodationNames;
+    result["programData"] = programData;
     delete result.accommodationsToReservation;
 
     return { data: result };
@@ -280,7 +286,11 @@ export class ReservationService {
   async newReservationEmail(text: string) {
     const users = await this.userService.findWithRole();
     const filteredUsers = users.filter((e) => {
-      return e.role === UserRoles.ADMIN || e.role === UserRoles.RECEPTIONIST;
+      return (
+        e.role === UserRoles.ADMIN ||
+        e.role === UserRoles.RECEPTIONIST ||
+        e.role === UserRoles.TOUR_GUIDE
+      );
     });
 
     for (const user of filteredUsers) {
@@ -837,6 +847,7 @@ GROUP BY
         "reservation.veganNumber",
         "reservation.dateFrom",
         "reservation.dateTo",
+        "reservation.paymentDetails",
       ])
       .innerJoin("reservation.payment", "payment")
       .where("payment.id =:id", { id: payment })

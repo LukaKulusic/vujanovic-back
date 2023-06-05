@@ -36,7 +36,6 @@ export class ReservationController {
     return await this.reservationService.getList(req.query);
   }
   @Get("/:id")
-  @Roles()
   async getById(@Param("id") id: number) {
     const reservation = await this.reservationService.getOne(id);
     if (reservation) {
@@ -88,15 +87,10 @@ export class ReservationController {
   <p><strong>Number of People:</strong> ${
     updatedReservation.data.personNumber
   }</p>
-  <p><strong>Number of Vegans:</strong> ${
-    updatedReservation.data.veganNumber
-  }</p>
-  <p><strong>Number of Vegetarians:</strong> ${
-    updatedReservation.data.vegetarianNumber
-  }</p>
-  <p><strong>Accommodation:</strong> [${
+  <p><strong>Accommodation:</strong> ${
     updatedReservation.data["accommodationName"]
-  }]</p>
+  }</p>
+  <p><strong>Programs:</strong> ${updatedReservation.data["programData"]}</p>
 </div>`;
 
       await this.reservationService.newReservationEmail(text);
@@ -137,11 +131,10 @@ export class ReservationController {
   }</p>
   <p><strong>To:</strong> ${result.data.dateTo.toISOString().split("T")[0]}</p>
   <p><strong>Number of People:</strong> ${result.data.personNumber}</p>
-  <p><strong>Number of Vegans:</strong> ${result.data.veganNumber}</p>
-  <p><strong>Number of Vegetarians:</strong> ${result.data.vegetarianNumber}</p>
-  <p><strong>Accommodation:</strong> [${result.data["accommodationName"]}]</p>
-</div>`;
-
+  <p><strong>Accommodation:</strong> ${result.data["accommodationName"]}</p>
+  <p><strong>Programs:</strong> ${result.data["programData"]}</p>
+  </div>`;
+      console.error(text);
       await this.reservationService.newReservationEmail(text);
     }
   }

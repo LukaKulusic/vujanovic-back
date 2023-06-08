@@ -175,7 +175,7 @@ export class ReservationController {
     }
   }
   @Post("report/meals")
-  async getReportByMealCount(@Body() body: ReservationReportMealsDto) {
+  async getReportByMealCount(@Body() body: any) {
     const report = await this.reservationService.getReportByMealCount(
       body.date
     );
@@ -186,7 +186,7 @@ export class ReservationController {
     }
   }
   @Post("report/programs")
-  async getReportByProgramCount(@Body() body: ReservationReportMealsDto) {
+  async getReportByProgramCount(@Body() body: any) {
     const report = await this.reservationService.getReportByProgramCount(
       body.date
     );

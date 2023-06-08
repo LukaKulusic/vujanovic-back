@@ -741,7 +741,7 @@ ORDER BY
       SELECT
   "program"."id",
   "program"."title",
-  count("program"."id") AS total
+  sum("reservation"."personNumber") AS total
 FROM
   "reservation"
   INNER JOIN "reservation_description" ON "reservation_description"."reservationId" = "reservation"."id"

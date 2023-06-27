@@ -36,6 +36,11 @@ export class UpdateReservationDto {
   @IsNumber()
   vegetarianNumber: number;
 
+  @IsOptional()
+  @ApiProperty()
+  @IsNumber()
+  glutenFreeNumber: number;
+
   @ApiProperty()
   @IsDateString()
   @IsOptional()

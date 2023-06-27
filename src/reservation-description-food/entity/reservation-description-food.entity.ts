@@ -1,30 +1,42 @@
-import { Accommodation } from 'src/accommodation/entity/accommodation.entity';
-import { Food } from 'src/food/entity/food.entity';
-import { ReservationDescription } from 'src/reservation-description/entity/reservation-description.entity';
-import { Reservation } from 'src/reservation/entity/reservation.entity';
+import { Accommodation } from "src/accommodation/entity/accommodation.entity";
+import { Food } from "src/food/entity/food.entity";
+import { ReservationDescription } from "src/reservation-description/entity/reservation-description.entity";
+import { Reservation } from "src/reservation/entity/reservation.entity";
 import {
   Entity,
   Column,
   BaseEntity,
   PrimaryGeneratedColumn,
   ManyToOne,
-} from 'typeorm';
-@Entity('reservation_description_food')
+} from "typeorm";
+@Entity("reservation_description_food")
 export class ReservationDescriptionFood extends BaseEntity {
-  @PrimaryGeneratedColumn('increment')
+  @PrimaryGeneratedColumn("increment")
   id: number;
+
+  @Column({ default: 0 })
+  foodPersonNumber: number;
+
+  @Column({ default: 0 })
+  foodVeganNumber: number;
+
+  @Column({ default: 0 })
+  foodVegetarianNumber: number;
+
+  @Column({ default: 0 })
+  foodGlutenFreeNumber: number;
 
   @ManyToOne(
     () => ReservationDescription,
     (description) => description.foodToDescriptions,
     {
-      onDelete: 'SET NULL',
-    },
+      onDelete: "SET NULL",
+    }
   )
   description: ReservationDescription;
 
   @ManyToOne(() => Food, (food) => food.foodToDescriptions, {
-    onDelete: 'SET NULL',
+    onDelete: "SET NULL",
   })
   food: Food;
 }

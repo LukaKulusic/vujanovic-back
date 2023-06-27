@@ -29,29 +29,38 @@ export class ReservationDescriptionService {
         date: new Date(description.date),
         reservation,
       });
+
       await this.reservationDescriptionRepo.save(newDescription);
-      if (description.foodIds.length) {
-        const food = await this.foodService.findByIds(description.foodIds);
-        if (food) {
-          for (const foo of food) {
-            await this.reservationDescriptionFoodService.create(
-              foo,
-              newDescription
-            );
-          }
+      if (description.foodDescription.length) {
+        //const food = await this.foodService.findByIds(description.foodIds);
+        //if (food) {
+        for (const foodData of description.foodDescription) {
+          const food = await this.foodService.findOne(foodData.foodId);
+          await this.reservationDescriptionFoodService.create(
+            food,
+            newDescription,
+            foodData.foodPersonNumber,
+            foodData.foodVeganNumber,
+            foodData.foodVegetarianNumber,
+            foodData.foodGlutenFreeNumber
+          );
         }
+        // }
       }
-      if (description.programIds.length) {
-        const programs = await this.programService.findByIds(
-          description.programIds
-        );
-        if (programs) {
-          for (const program of programs) {
-            await this.reservationDescriptionProgramService.create(
-              program,
-              newDescription
-            );
-          }
+      if (description.programDescription.length) {
+        // const programs = await this.programService.findByIds(
+        //   description.programIds
+        // );
+        //if (programs) {
+        for (const programData of description.programDescription) {
+          const program = await this.programService.findOne(
+            programData.programId
+          );
+          await this.reservationDescriptionProgramService.create(
+            program,
+            newDescription,
+            programData.programPersonNumber
+          );
         }
       }
 

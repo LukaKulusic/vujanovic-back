@@ -1,14 +1,13 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsNumber, IsOptional } from "class-validator";
 
-export class Dto {
+export class DescriptionProgramDto {
   @ApiProperty()
   @IsNumber()
-  @IsOptional()
-  id: number;
-}
+  programId: number;
 
-export class UpdateDto {
   @ApiProperty()
-  id: number | null;
+  @IsOptional()
+  @IsNumber()
+  programPersonNumber: number;
 }

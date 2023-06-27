@@ -42,6 +42,9 @@ export class Reservation extends BaseEntity {
   @Column({ default: 0 })
   vegetarianNumber: number;
 
+  @Column({ default: 0 })
+  glutenFreeNumber: number;
+
   @Column("text", { nullable: true })
   paymentDetails: string;
 

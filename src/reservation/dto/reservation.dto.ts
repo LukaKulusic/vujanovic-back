@@ -49,6 +49,11 @@ export class ReservationDto {
   @IsNumber()
   vegetarianNumber: number;
 
+  @IsOptional()
+  @ApiProperty()
+  @IsNumber()
+  glutenFreeNumber: number;
+
   @ApiProperty()
   @IsDateString()
   // @Type(() => Date)

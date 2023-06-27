@@ -30,7 +30,6 @@ import { Cron } from "@nestjs/schedule";
 import { UserService } from "src/user/user.service";
 import { ReservationAccommodationService } from "src/reservation-accommodation/reservation-accommodation.service";
 import { ReservationDescriptionService } from "src/reservation-description/reservation-description.service";
-import { count, error } from "console";
 
 @Injectable()
 export class ReservationService {
@@ -245,10 +244,21 @@ export class ReservationService {
       const data = new Object();
       data["date"] = e.date.toISOString().split("T")[0];
       data["programIds"] = e.programsToDescriptions.map((e) => {
-        return e.program.id;
+        // return {e.program.id;}
+        return {
+          programId: e.program.id,
+          personNumber: e.programPersonNumber,
+        };
       });
       data["foodIds"] = e.foodToDescriptions.map((e) => {
-        return e.food.id;
+        //return e.food.id;
+        return {
+          foodId: e.food.id,
+          personNumber: e.foodPersonNumber,
+          veganNumber: e.foodVeganNumber,
+          vegetarianNumber: e.foodVegetarianNumber,
+          glutenFreeNumber: e.foodGlutenFreeNumber,
+        };
       });
       data["programNames"] = e.programsToDescriptions.map((e) => {
         return e.program.title;
@@ -707,9 +717,11 @@ export class ReservationService {
       SELECT
   "food"."id",
   "food"."name",
-  SUM("reservation"."personNumber") AS total,
-  SUM("reservation"."veganNumber") AS vegan,
-  SUM("reservation"."vegetarianNumber") AS vegetarian
+  SUM("reservation_description_food"."foodPersonNumber") AS total,
+  SUM("reservation_description_food"."foodVeganNumber") AS vegan,
+  SUM("reservation_description_food"."foodVegetarianNumber") AS vegetarian,
+  SUM("reservation_description_food"."foodGlutenFreeNumber") AS glutenFree
+
 FROM
   "reservation"
   INNER JOIN "reservation_description" ON "reservation_description"."reservationId" = "reservation"."id"
@@ -741,7 +753,7 @@ ORDER BY
       SELECT
   "program"."id",
   "program"."title",
-  sum("reservation"."personNumber") AS total
+  sum("reservation_description_program"."programPersonNumber") AS total
 FROM
   "reservation"
   INNER JOIN "reservation_description" ON "reservation_description"."reservationId" = "reservation"."id"

@@ -13,11 +13,11 @@ export class ReservationDescriptionDto {
   @ApiProperty()
   @ValidateNested()
   @Type(() => DescriptionFoodDto)
-  foodDescription: DescriptionFoodDto[];
+  foodIds: DescriptionFoodDto[];
 
   @IsOptional()
   @ApiProperty()
   @ValidateNested()
   @Type(() => DescriptionProgramDto)
-  programDescription: DescriptionProgramDto[];
+  programIds: DescriptionProgramDto[];
 }

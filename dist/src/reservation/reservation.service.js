@@ -214,15 +214,29 @@ let ReservationService = class ReservationService {
         if (!result) {
             throw new common_1.HttpException("Reservation not found", common_1.HttpStatus.NOT_FOUND);
         }
+        let programData = "";
         const data = result.descriptions.map((e) => {
             const data = new Object();
             data["date"] = e.date.toISOString().split("T")[0];
             data["programIds"] = e.programsToDescriptions.map((e) => {
-                return e.program.id;
+                return {
+                    programId: e.program.id,
+                    personNumber: e.programPersonNumber,
+                };
             });
             data["foodIds"] = e.foodToDescriptions.map((e) => {
-                return e.food.id;
+                return {
+                    foodId: e.food.id,
+                    personNumber: e.foodPersonNumber,
+                    veganNumber: e.foodVeganNumber,
+                    vegetarianNumber: e.foodVegetarianNumber,
+                    glutenFreeNumber: e.foodGlutenFreeNumber,
+                };
             });
+            data["programNames"] = e.programsToDescriptions.map((e) => {
+                return e.program.title;
+            });
+            programData += `<div>Datum: ${data["date"]}, programi: [${data["programNames"]}];</div> `;
             return data;
         });
         const accommodations = result.accommodationsToReservation.map((element) => {
@@ -236,6 +250,7 @@ let ReservationService = class ReservationService {
         delete result.descriptions;
         result["accommodations"] = accommodations;
         result["accommodationName"] = accommodationNames;
+        result["programData"] = programData;
         delete result.accommodationsToReservation;
         return { data: result };
     }
@@ -247,10 +262,7 @@ let ReservationService = class ReservationService {
     }
     async newReservationEmail(text) {
         const users = await this.userService.findWithRole();
-        const filteredUsers = users.filter((e) => {
-            return e.role === roles_enum_1.UserRoles.ADMIN || e.role === roles_enum_1.UserRoles.RECEPTIONIST;
-        });
-        for (const user of filteredUsers) {
+        for (const user of users) {
             await this.mailService.sendEmail(user.email, text);
         }
     }
@@ -355,6 +367,7 @@ let ReservationService = class ReservationService {
     }
     async findReservationByRole(role) {
         const date = new Date();
+        date.setDate(date.getDate() + 7);
         const dateString = date.toISOString().split("T")[0];
         const reservations = await this.reservationRepo
             .createQueryBuilder("reservation")
@@ -397,7 +410,6 @@ let ReservationService = class ReservationService {
         if (reservations[1] === 0)
             return { data: "" };
         if (role === roles_enum_1.UserRoles.ADMIN || role === roles_enum_1.UserRoles.RECEPTIONIST) {
-            console.error("ADMIN");
             let text = "";
             let programData = "";
             let foodData = "";
@@ -426,10 +438,10 @@ let ReservationService = class ReservationService {
                 delete reservation.descriptions;
                 delete reservation.accommodationsToReservation;
                 reservation["description"].map((e) => {
-                    programData += `<div>Datum: ${e.date}, programi:${e.programTitles};</div> `;
+                    programData += `<div>Datum: ${e.date}, programi: ${e.programTitles};</div> `;
                 });
                 reservation["description"].map((e) => {
-                    foodData += `<div>Datum: ${e.date}, obroci:${e.foodNames};</div> `;
+                    foodData += `<div>Datum: ${e.date}, obroci: ${e.foodNames};</div> `;
                 });
                 if (reservation.payment)
                     payment = reservation.payment.type;
@@ -474,7 +486,6 @@ let ReservationService = class ReservationService {
             };
         }
         else if (role === roles_enum_1.UserRoles.TOUR_GUIDE) {
-            console.error("GUIDE");
             let text = "";
             let programData = "";
             let country = "";
@@ -491,7 +502,7 @@ let ReservationService = class ReservationService {
                 reservation["description"] = description;
                 delete reservation.descriptions;
                 reservation["description"].map((e) => {
-                    programData += `<div>Datum: ${e.date}, programi:${e.programTitles};</div> `;
+                    programData += `<div>Datum: ${e.date}, programi: ${e.programTitles};</div> `;
                 });
                 if (reservation.country)
                     country = reservation.country.name;
@@ -524,7 +535,6 @@ let ReservationService = class ReservationService {
             };
         }
         else if (role === roles_enum_1.UserRoles.COOK) {
-            console.error("COOK");
             let text = "";
             let foodData = "";
             let total = 0;
@@ -542,7 +552,7 @@ let ReservationService = class ReservationService {
                 reservation["description"] = description;
                 delete reservation.descriptions;
                 reservation["description"].map((e) => {
-                    foodData += `<div>Datum: ${e.date}, obroci:${e.foodNames};</div> `;
+                    foodData += `<div>Datum: ${e.date}, obroci: ${e.foodNames};</div> `;
                 });
                 total += reservation.personNumber;
                 totalVegan += reservation.veganNumber;
@@ -573,7 +583,6 @@ let ReservationService = class ReservationService {
         <p>${text}</p>
       </div>
     `;
-            console.error(textCook);
             return {
                 data: textCook,
             };
@@ -589,9 +598,11 @@ let ReservationService = class ReservationService {
       SELECT
   "food"."id",
   "food"."name",
-  SUM("reservation"."personNumber") AS total,
-  SUM("reservation"."veganNumber") AS vegan,
-  SUM("reservation"."vegetarianNumber") AS vegetarian
+  SUM("reservation_description_food"."foodPersonNumber") AS total,
+  SUM("reservation_description_food"."foodVeganNumber") AS vegan,
+  SUM("reservation_description_food"."foodVegetarianNumber") AS vegetarian,
+  SUM("reservation_description_food"."foodGlutenFreeNumber") AS glutenFree
+
 FROM
   "reservation"
   INNER JOIN "reservation_description" ON "reservation_description"."reservationId" = "reservation"."id"
@@ -624,7 +635,7 @@ ORDER BY
       SELECT
   "program"."id",
   "program"."title",
-  count("program"."id") AS total
+  sum("reservation_description_program"."programPersonNumber") AS total
 FROM
   "reservation"
   INNER JOIN "reservation_description" ON "reservation_description"."reservationId" = "reservation"."id"
@@ -718,6 +729,7 @@ GROUP BY
             "reservation.veganNumber",
             "reservation.dateFrom",
             "reservation.dateTo",
+            "reservation.paymentDetails",
         ])
             .innerJoin("reservation.payment", "payment")
             .where("payment.id =:id", { id: payment })
@@ -824,7 +836,6 @@ GROUP BY
         for (const user of users) {
             const text = await this.findReservationByRole(user.role);
             if (text.data.length) {
-                console.error(text);
                 await this.mailService.sendEmail(user.email, text.data);
             }
         }
@@ -832,7 +843,7 @@ GROUP BY
     }
 };
 __decorate([
-    (0, schedule_1.Cron)("30 *  * * * *"),
+    (0, schedule_1.Cron)("0 0 12 * * *"),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)

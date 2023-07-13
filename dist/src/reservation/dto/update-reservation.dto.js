@@ -45,6 +45,12 @@ __decorate([
     __metadata("design:type", Number)
 ], UpdateReservationDto.prototype, "vegetarianNumber", void 0);
 __decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], UpdateReservationDto.prototype, "glutenFreeNumber", void 0);
+__decorate([
     (0, swagger_1.ApiProperty)(),
     (0, class_validator_1.IsDateString)(),
     (0, class_validator_1.IsOptional)(),

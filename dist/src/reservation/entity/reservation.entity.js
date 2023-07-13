@@ -51,6 +51,10 @@ __decorate([
     __metadata("design:type", Number)
 ], Reservation.prototype, "vegetarianNumber", void 0);
 __decorate([
+    (0, typeorm_1.Column)({ default: 0 }),
+    __metadata("design:type", Number)
+], Reservation.prototype, "glutenFreeNumber", void 0);
+__decorate([
     (0, typeorm_1.Column)("text", { nullable: true }),
     __metadata("design:type", String)
 ], Reservation.prototype, "paymentDetails", void 0);

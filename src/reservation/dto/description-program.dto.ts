@@ -9,5 +9,5 @@ export class DescriptionProgramDto {
   @ApiProperty()
   @IsOptional()
   @IsNumber()
-  programPersonNumber: number;
+  personNumber: number;
 }

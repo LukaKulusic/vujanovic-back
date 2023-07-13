@@ -17,6 +17,7 @@ class Dto {
 __decorate([
     (0, swagger_1.ApiProperty)(),
     (0, class_validator_1.IsNumber)(),
+    (0, class_validator_1.IsOptional)(),
     __metadata("design:type", Number)
 ], Dto.prototype, "id", void 0);
 exports.Dto = Dto;

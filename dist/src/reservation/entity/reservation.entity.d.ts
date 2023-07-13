@@ -12,6 +12,7 @@ export declare class Reservation extends BaseEntity {
     personNumber: number;
     veganNumber: number;
     vegetarianNumber: number;
+    glutenFreeNumber: number;
     paymentDetails: string;
     desc: string;
     createdDate: Date;

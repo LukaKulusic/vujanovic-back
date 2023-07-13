@@ -31,35 +31,35 @@ export class ReservationDescriptionService {
       });
 
       await this.reservationDescriptionRepo.save(newDescription);
-      if (description.foodDescription.length) {
+      if (description.foodIds.length) {
         //const food = await this.foodService.findByIds(description.foodIds);
         //if (food) {
-        for (const foodData of description.foodDescription) {
+        for (const foodData of description.foodIds) {
           const food = await this.foodService.findOne(foodData.foodId);
           await this.reservationDescriptionFoodService.create(
             food,
             newDescription,
-            foodData.foodPersonNumber,
-            foodData.foodVeganNumber,
-            foodData.foodVegetarianNumber,
-            foodData.foodGlutenFreeNumber
+            foodData.personNumber,
+            foodData.veganNumber,
+            foodData.vegetarianNumber,
+            foodData.glutenFreeNumber
           );
         }
         // }
       }
-      if (description.programDescription.length) {
+      if (description.programIds.length) {
         // const programs = await this.programService.findByIds(
         //   description.programIds
         // );
         //if (programs) {
-        for (const programData of description.programDescription) {
+        for (const programData of description.programIds) {
           const program = await this.programService.findOne(
             programData.programId
           );
           await this.reservationDescriptionProgramService.create(
             program,
             newDescription,
-            programData.programPersonNumber
+            programData.personNumber
           );
         }
       }

@@ -9,20 +9,20 @@ export class DescriptionFoodDto {
   @ApiProperty()
   @IsOptional()
   @IsNumber()
-  foodPersonNumber: number;
+  personNumber: number;
 
   @ApiProperty()
   @IsOptional()
   @IsNumber()
-  foodVeganNumber: number;
+  veganNumber: number;
 
   @ApiProperty()
   @IsOptional()
   @IsNumber()
-  foodVegetarianNumber: number;
+  vegetarianNumber: number;
 
   @ApiProperty()
   @IsOptional()
   @IsNumber()
-  foodGlutenFreeNumber: number;
+  glutenFreeNumber: number;
 }

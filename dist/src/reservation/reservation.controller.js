@@ -25,7 +25,6 @@ const get_current_user_decorator_1 = require("../auth/decorator/get-current-user
 const get_many_user_dto_1 = require("../user/dto/get-many-user.dto");
 const update_many_reservation_dto_1 = require("./dto/update-many-reservation.dto");
 const public_decorator_1 = require("../auth/decorator/public.decorator");
-const report_meals_dto_1 = require("./dto/report-meals.dto");
 let ReservationController = class ReservationController {
     constructor(reservationService) {
         this.reservationService = reservationService;
@@ -68,9 +67,8 @@ let ReservationController = class ReservationController {
   <p><strong>From:</strong> ${updatedReservation.data.dateFrom.toISOString().split("T")[0]}</p>
   <p><strong>To:</strong> ${updatedReservation.data.dateTo.toISOString().split("T")[0]}</p>
   <p><strong>Number of People:</strong> ${updatedReservation.data.personNumber}</p>
-  <p><strong>Number of Vegans:</strong> ${updatedReservation.data.veganNumber}</p>
-  <p><strong>Number of Vegetarians:</strong> ${updatedReservation.data.vegetarianNumber}</p>
-  <p><strong>Accommodation:</strong> [${updatedReservation.data["accommodationName"]}]</p>
+  <p><strong>Accommodation:</strong> ${updatedReservation.data["accommodationName"]}</p>
+  <p><strong>Programs:</strong> ${updatedReservation.data["programData"]}</p>
 </div>`;
             await this.reservationService.newReservationEmail(text);
         }
@@ -101,10 +99,9 @@ let ReservationController = class ReservationController {
   <p><strong>From:</strong> ${result.data.dateFrom.toISOString().split("T")[0]}</p>
   <p><strong>To:</strong> ${result.data.dateTo.toISOString().split("T")[0]}</p>
   <p><strong>Number of People:</strong> ${result.data.personNumber}</p>
-  <p><strong>Number of Vegans:</strong> ${result.data.veganNumber}</p>
-  <p><strong>Number of Vegetarians:</strong> ${result.data.vegetarianNumber}</p>
-  <p><strong>Accommodation:</strong> [${result.data["accommodationName"]}]</p>
-</div>`;
+  <p><strong>Accommodation:</strong> ${result.data["accommodationName"]}</p>
+  <p><strong>Programs:</strong> ${result.data["programData"]}</p>
+  </div>`;
             await this.reservationService.newReservationEmail(text);
         }
     }
@@ -121,7 +118,6 @@ let ReservationController = class ReservationController {
             if (role) {
                 const data = await this.reservationService.findReservationByRole(role);
                 if (data.data.length) {
-                    console.log(data);
                     return data;
                 }
                 else
@@ -196,7 +192,6 @@ __decorate([
 ], ReservationController.prototype, "getAll", null);
 __decorate([
     (0, common_1.Get)("/:id"),
-    (0, roles_decorator_1.Roles)(),
     __param(0, (0, common_1.Param)("id")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
@@ -280,14 +275,14 @@ __decorate([
     (0, common_1.Post)("report/meals"),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [report_meals_dto_1.ReservationReportMealsDto]),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], ReservationController.prototype, "getReportByMealCount", null);
 __decorate([
     (0, common_1.Post)("report/programs"),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [report_meals_dto_1.ReservationReportMealsDto]),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], ReservationController.prototype, "getReportByProgramCount", null);
 __decorate([

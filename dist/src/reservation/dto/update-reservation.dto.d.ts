@@ -5,6 +5,7 @@ export declare class UpdateReservationDto {
     personNumber: number;
     veganNumber: number;
     vegetarianNumber: number;
+    glutenFreeNumber: number;
     dateFrom: Date;
     dateTo: Date;
     contact: string;

@@ -8,6 +8,7 @@ export declare class ReservationDto {
     personNumber: number;
     veganNumber: number;
     vegetarianNumber: number;
+    glutenFreeNumber: number;
     dateFrom: Date;
     dateTo: Date;
     country: Dto;
